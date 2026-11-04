@@ -57,7 +57,22 @@ class Equipo(models.Model):
     def __str__(self):
         return self.nombre
 
+class Usuario(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    alias = models.CharField(max_length=30, unique=True)
 
+    equipo = models.ForeignKey(
+        "Equipo", null=True, blank=True,
+        on_delete=models.SET_NULL, related_name="usuario_equipo",
+    )
+
+    class Meta:
+        verbose_name = "Usuario"
+        verbose_name_plural = "Usuarios"
+
+    def __str__(self):
+        return self.alias
 
 class Alineacion(models.Model):
     usuario = models.OneToOneField(
@@ -71,28 +86,6 @@ class Alineacion(models.Model):
     class Meta:
         verbose_name = "Alineación"
         verbose_name_plural = "Alineaciones"
-
-
-class Usuario(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    alias = models.CharField(max_length=30, unique=True)
-
-    equipo = models.ForeignKey(
-        "Equipo", null=True, blank=True,
-        on_delete=models.SET_NULL, related_name="usuario-usuario",
-    )
-    alineacion = models.ManyToManyField(
-        "Jugador", blank=True, related_name="elegido_por",
-    )
-
-    class Meta:
-        verbose_name = "Usuario"
-        verbose_name_plural = "Usuarios"
-
-    def __str__(self):
-        return self.alias
-
 
 class Jugador(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
@@ -143,9 +136,6 @@ class Partido(models.Model):
 
     def __str__(self):
         return f"{self.local} vs {self.visitante}"
-
-from django.db import models
-
 
 class EstadisticaPartido(models.Model):
     jugador = models.ForeignKey(
