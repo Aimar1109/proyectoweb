@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Fantasy</title>
+</head>
+<body>
+
+    <h1>Bienvenido a Fantasy</h1>
+
+    <p>Aplicación de gestión de una liga de fútbol.</p>
+
+    <h2>Menú principal</h2>
+
+    <h3>Clubes</h3>
+    <ul>
+        <li>
+            <a href="{% url 'lista_clubes' %}">Consultar clubes</a>
+        </li>
+    </ul>
+
+    <h3>Temporadas</h3>
+    <ul>
+        <li>
+            <a href="{% url 'lista_temporadas' %}">Consultar temporadas</a>
+        </li>
+    </ul>
+
+</body>
+</html>

@@ -15,4 +15,6 @@ urlpatterns = [
     path("temporadas/<int:pk>/", views.detalle_temporada, name="detalle_temporada"),
 
     path("ligas/<int:pk>/", views.detalle_liga, name="detalle_liga"),
+
+    path("usuarios/<int:pk>/", views.detalle_usuario, name="detalle_usuario"),
 ]

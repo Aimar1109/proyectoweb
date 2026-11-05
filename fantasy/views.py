@@ -1,12 +1,12 @@
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
-from .models import Club, Equipo, Temporada, Jugador,Liga
+from .models import Club, Equipo, Temporada,Liga,Usuario
 
 # Create your views here.
 
 
 def index(request):
-    return HttpResponse("hola")
+    return render(request, "fantasy/index.html")
 
 #CLUB 
 
@@ -46,3 +46,13 @@ def detalle_liga(request,pk):
     equipos = liga.equipos.all()
     return render(request,"fantasy/ligas/detalle_liga.html",{"liga":liga,"equipos":equipos})
 
+#USUARIO | solo detalle , para cuando acceda con usuario y contraseña
+
+def detalle_usuario(request, pk):
+    usuario = get_object_or_404(Usuario, pk=pk)
+
+    return render(
+        request,
+        "fantasy/usuarios/detalle_usuario.html",
+        {"usuario": usuario}
+    )
