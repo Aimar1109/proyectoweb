@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ liga.nombre }}</title>
+</head>
+<body>
+
+    <h1>{{ liga.nombre }}</h1>
+
+    <p>Categoría: {{ liga.categoria }}</p>
+    <p>Grupo: {{ liga.grupo }}</p>
+
+    <h2>Equipos de la liga</h2>
+
+    {% for equipo in equipos %}
+        <p>
+            <a href="{% url 'detalle_equipo' equipo.pk %}">
+                {{ equipo.nombre }}
+            </a>
+        </p>
+    {% empty %}
+        <p>Esta liga no tiene equipos.</p>
+    {% endfor %}
+
+    <a href="{% url 'lista_temporadas' %}">Volver a temporadas</a>
+
+</body>
+</html>

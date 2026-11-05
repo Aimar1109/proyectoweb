@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Temporadas</title>
+</head>
+<body>
+
+    <h1>Lista de temporadas</h1>
+
+    {% for temporada in temporadas %}
+        <p>
+            <a href="{% url 'detalle_temporada' temporada.pk %}">
+                {{ temporada }}
+            </a>
+        </p>
+    {% empty %}
+        <p>No hay temporadas registradas.</p>
+    {% endfor %}
+
+</body>
+</html>

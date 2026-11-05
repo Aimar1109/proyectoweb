@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ equipo.nombre }}</title>
+</head>
+<body>
+
+    <h1>{{ equipo.nombre }}</h1>
+
+    <p>Ciudad: {{ equipo.ciudad }}</p>
+    <p>Año de fundación: {{ equipo.anno_fundacion }}</p>
+    <p>Descripción: {{ equipo.descripcion }}</p>
+
+    <h2>Jugadores</h2>
+
+    {% for jugador in jugadores %}
+        <p>
+            {{ jugador.nombre }} -
+            {{ jugador.posicion }}
+
+            {% if jugador.dorsal %}
+                - Dorsal: {{ jugador.dorsal }}
+            {% endif %}
+        </p>
+    {% empty %}
+        <p>Este equipo no tiene jugadores.</p>
+    {% endfor %}
+
+</body>
+</html>

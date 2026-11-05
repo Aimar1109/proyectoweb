@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ club.nombre }}</title>
+</head>
+<body>
+
+    <h1>{{ club.nombre }}</h1>
+
+    <p>Email: {{ club.email }}</p>
+    <p>Dirección: {{ club.direccion }}</p>
+
+    <h2>Equipos del club</h2>
+
+    {% for equipo in equipos %}
+        <p>
+            <a href="{% url 'detalle_equipo' equipo.pk %}">
+                {{ equipo.nombre }}
+            </a>
+        </p>
+    {% empty %}
+        <p>Este club no tiene equipos.</p>
+    {% endfor %}
+
+    <a href="{% url 'lista_clubes' %}">Volver a clubes</a>
+
+</body>
+</html>

@@ -39,5 +39,10 @@ def detalle_temporada(request,pk):
     ligas = temporada.ligas.all()
     return render(request,"fantasy/temporadas/detalle_temporada.html",{"temporada":temporada,"ligas":ligas})
 
+#LIGA | solo detalle porque tenemos la lista de ligas en el detalle de la temporada
 
+def detalle_liga(request,pk):
+    liga = get_object_or_404(Liga,pk=pk)
+    equipos = liga.equipos.all()
+    return render(request,"fantasy/ligas/detalle_liga.html",{"liga":liga,"equipos":equipos})
 
