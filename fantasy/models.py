@@ -124,23 +124,20 @@ class Jornada(models.Model):
         
 
 class Alineacion(models.Model):
-    usuario = models.ForeignKey("Usuario", on_delete=models.CASCADE, related_name="alineaciones")
-    jornada = models.ForeignKey("Jornada", on_delete=models.CASCADE, related_name="alineaciones")
-    jugadores = models.ManyToManyField("Jugador", blank=True, related_name="elegido_en")
+    usuario = models.OneToOneField(
+        "Usuario", on_delete=models.CASCADE, related_name="alineacion",
+    )
+    jugadores = models.ManyToManyField(
+        "Jugador", blank=True, related_name="elegido_en",
+    )
     actualizada = models.DateTimeField(auto_now=True)
 
     class Meta:
         verbose_name = "Alineación"
         verbose_name_plural = "Alineaciones"
-        constraints = [
-            models.UniqueConstraint(
-                fields=["usuario", "jornada"],
-                name="una_alineacion_por_usuario_y_jornada",
-            ),
-        ]
 
     def __str__(self):
-        return f"{self.usuario} - {self.jornada}"
+        return f"Alineación de {self.usuario}"
 
 
 class Partido(models.Model):
