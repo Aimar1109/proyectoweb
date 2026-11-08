@@ -27,5 +27,7 @@
         <p>Este equipo no tiene jugadores.</p>
     {% endfor %}
 
+    <a href="{% url 'detalle_club' equipo.club.pk %}">Volver a {{equipo.club.nombre}}</a>
+
 </body>
 </html>
