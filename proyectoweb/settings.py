@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     "fantasy"
 ]
 
+AUTH_USER_MODEL = "fantasy.Usuario"
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
