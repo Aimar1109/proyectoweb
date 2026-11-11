@@ -1,0 +1,56 @@
+
+{% extends 'fantasy/base.html' %}
+
+{% block title %}Registrarse - Fantasy{% endblock %}
+
+{% block content %}
+
+<div class="login-container">
+
+    <div class="login-card">
+
+        <h1>Crear una cuenta</h1>
+
+        <p>Únete a Fantasy Ligas Vascas y empieza a competir.</p>
+
+        <form method="post">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="login-error">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <label for="{{ field.id_for_label }}">
+                    {{ field.label }}
+                </label>
+
+                {{ field }}
+
+                {% if field.help_text %}
+                    <small>{{ field.help_text }}</small>
+                {% endif %}
+
+                {% for error in field.errors %}
+                    <p class="login-error">{{ error }}</p>
+                {% endfor %}
+            {% endfor %}
+
+            <button type="submit">
+                Crear cuenta
+            </button>
+
+        </form>
+
+        <p>
+            ¿Ya tienes cuenta?
+            <a href="{% url 'login' %}">Inicia sesión</a>
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

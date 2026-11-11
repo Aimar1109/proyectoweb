@@ -1,14 +1,17 @@
-from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
+
+from .forms import RegistroForm
 from .models import Club, Equipo, Temporada,Liga,Usuario
 
+from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
+from django.contrib.auth import login
 
 # Create your views here.
 
 
-from django.views.generic import TemplateView
+from django.views.generic import CreateView, TemplateView
 from django.utils import timezone
 
 from .models import Club, Equipo, Jugador, Usuario, Partido
@@ -80,5 +83,18 @@ class UsuarioLoginView(LoginView):
     redirect_authenticated_user = True
     next_page = reverse_lazy("index")
 
+# LOGOUT
 class UsuarioLogoutView(LogoutView):
     next_page = reverse_lazy('index')
+
+#REGISTRO
+class RegistroView(CreateView):
+    model = Usuario
+    form_class = RegistroForm
+    template_name = 'fantasy/user/registro.html'
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        login(self.request, self.object)
+        return response
