@@ -1,0 +1,321 @@
+/* BASE AND INDEX */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f7f9f6;
+    color: #263128;
+}
+
+a {
+    color: #195b24;
+}
+
+.navbar {
+    background-color: #195b24;
+    color: white;
+    display: flex;
+    align-items: center;
+    padding: 12px 30px;
+    gap: 40px;
+}
+
+.navbar-brand {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.navbar-links,
+.navbar-auth {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+.navbar-auth {
+    margin-left: auto;
+}
+
+.navbar a {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.navbar a:hover {
+    text-decoration: underline;
+}
+
+.btn-registro {
+    background: white;
+    color: #195b24 !important;
+    padding: 13px 20px;
+    border-radius: 5px;
+}
+
+.container {
+    max-width: 1000px;
+    margin: auto;
+    padding: 65px 20px 45px;
+}
+
+.hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 55px;
+    align-items: center;
+    margin-bottom: 70px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    line-height: 1.1;
+    color: #12351d;
+    margin: 0 0 20px;
+}
+
+.hero-text p {
+    font-size: 18px;
+    line-height: 1.65;
+    color: #48534b;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 14px 22px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background: #195b24;
+    color: white;
+}
+
+.btn-secondary {
+    border: 2px solid #195b24;
+    color: #195b24;
+}
+
+.card {
+    background: white;
+    border: 1px solid #d9e0d9;
+    border-radius: 10px;
+    padding: 23px;
+}
+
+.card h3 {
+    margin: 0 0 10px;
+    font-size: 17px;
+}
+
+.card p {
+    margin: 0;
+    line-height: 1.6;
+    color: #4c574e;
+}
+
+.partido {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 14px 0;
+    border-bottom: 1px solid #e5e9e5;
+}
+
+.partido span:nth-child(2) {
+    color: #647067;
+}
+
+.card-note {
+    margin-top: 15px !important;
+    font-size: 14px;
+}
+
+.section {
+    margin-bottom: 48px;
+}
+
+.section h2 {
+    font-size: 24px;
+    color: #173c22;
+    margin-bottom: 20px;
+}
+
+.grid-three {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.grid-two {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.step-number {
+    display: block;
+    font-size: 29px;
+    font-weight: bold;
+    color: #195b24;
+    margin-bottom: 8px;
+}
+
+.grid-two a {
+    display: inline-block;
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+.stats {
+    background: #195b24;
+    color: white;
+    border-radius: 12px;
+    padding: 30px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    text-align: center;
+    gap: 20px;
+}
+
+.stats strong {
+    display: block;
+    font-size: 38px;
+}
+
+.stats span {
+    display: block;
+}
+
+.footer {
+    border-top: 1px solid #dce3dc;
+    padding: 25px;
+    text-align: center;
+    color: #58655b;
+    font-size: 14px;
+}
+
+@media (max-width: 750px) {
+    .navbar {
+        flex-wrap: wrap;
+        gap: 18px;
+    }
+
+    .navbar-auth {
+        margin-left: 0;
+    }
+
+    .hero,
+    .grid-three,
+    .grid-two {
+        grid-template-columns: 1fr;
+    }
+
+    .hero h1 {
+        font-size: 36px;
+    }
+
+    .stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+
+/* LOGIN */
+
+.login-container {
+    min-height: 75vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 420px;
+    background: white;
+    padding: 35px;
+    border: 1px solid #d9e0d9;
+    border-radius: 12px;
+}
+
+.login-card h1 {
+    text-align: center;
+    color: #173c22;
+    margin-bottom: 10px;
+}
+
+.login-card p {
+    text-align: center;
+    color: #58655b;
+}
+
+.login-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 25px;
+}
+
+.login-card label {
+    font-weight: bold;
+}
+
+.login-card input {
+    padding: 12px;
+    border: 1px solid #d9e0d9;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.login-card button {
+    background: #195b24;
+    color: white;
+    border: none;
+    padding: 13px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.login-card button:hover {
+    background: #123f1a;
+}
+
+.login-card .login-error {
+    color: #b91c1c;
+}
+
+/* LOGOUT */
+
+.navbar-auth form {
+    margin: 0;
+}
+
+.btn-logout {
+    background-color: white;
+    color: #195b24;
+    border: none;
+    padding: 12px 18px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-logout:hover {
+    background-color: #e8f0e8;
+}

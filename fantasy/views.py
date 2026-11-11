@@ -2,11 +2,36 @@ from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from .models import Club, Equipo, Temporada,Liga,Usuario
 
+from django.contrib.auth.views import LoginView, LogoutView
+from django.urls import reverse_lazy
+
 # Create your views here.
 
 
-def index(request):
-    return render(request, "fantasy/index.html")
+from django.views.generic import TemplateView
+from django.utils import timezone
+
+from .models import Club, Equipo, Jugador, Usuario, Partido
+
+
+class IndexView(TemplateView):
+    template_name = 'fantasy/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['total_clubes'] = Club.objects.count()
+        context['total_equipos'] = Equipo.objects.count()
+        context['total_jugadores'] = Jugador.objects.count()
+        context['total_usuarios'] = Usuario.objects.count()
+
+        context['proximos_partidos'] = Partido.objects.filter(
+            fecha__gte=timezone.now()
+        ).select_related(
+            'local', 'visitante'
+        ).order_by('fecha')[:2]
+
+        return context
 
 #CLUB 
 
@@ -46,13 +71,14 @@ def detalle_liga(request,pk):
     equipos = liga.equipos.all()
     return render(request,"fantasy/ligas/detalle_liga.html",{"liga":liga,"equipos":equipos})
 
-#USUARIO | solo detalle , para cuando acceda con usuario y contraseña
+#USUARIO
 
-def detalle_usuario(request, pk):
-    usuario = get_object_or_404(Usuario, pk=pk)
+# LOGIN
 
-    return render(
-        request,
-        "fantasy/usuarios/detalle_usuario.html",
-        {"usuario": usuario}
-    )
+class UsuarioLoginView(LoginView):
+    template_name = "fantasy/user/login.html"
+    redirect_authenticated_user = True
+    next_page = reverse_lazy("index")
+
+class UsuarioLogoutView(LogoutView):
+    next_page = reverse_lazy('index')

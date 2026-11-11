@@ -1,30 +1,149 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Fantasy</title>
-</head>
-<body>
 
-    <h1>Bienvenido a Fantasy</h1>
+{% extends 'fantasy/base.html' %}
 
-    <p>Aplicación de gestión de una liga de fútbol.</p>
+{% block title %}Inicio - Fantasy Ligas Vascas{% endblock %}
 
-    <h2>Menú principal</h2>
+{% block content %}
 
-    <h3>Clubes</h3>
-    <ul>
-        <li>
-            <a href="{% url 'lista_clubes' %}">Consultar clubes</a>
-        </li>
-    </ul>
+<div class="container">
 
-    <h3>Temporadas</h3>
-    <ul>
-        <li>
-            <a href="{% url 'lista_temporadas' %}">Consultar temporadas</a>
-        </li>
-    </ul>
+    <!-- PRESENTACIÓN -->
+    <section class="hero">
 
-</body>
-</html>
+        <div class="hero-text">
+            <h1>Monta tu once.<br>Suma con tu equipo.</h1>
+
+            <p>
+                El fantasy de las ligas vascas con datos de la FVF.
+                Elige tu equipo, escoge a tus 11 jugadores y
+                consigue puntos por minutos, goles, tarjetas
+                y las votaciones de usuarios y entrenadores.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="{% url 'index' %}" class="btn-primary">
+                    Empezar a jugar
+                </a>
+
+                <a href="{% url 'lista_clubes' %}" class="btn-secondary">
+                    Ver clubes
+                </a>
+            </div>
+        </div>
+
+        <!-- PRÓXIMOS PARTIDOS -->
+        <div class="card jornada-card">
+            <h3>Próxima jornada</h3>
+
+            {% for partido in proximos_partidos %}
+                <div class="partido">
+                    <span>{{ partido.local.nombre }}</span>
+                    <span>vs</span>
+                    <span>{{ partido.visitante.nombre }}</span>
+                </div>
+            {% empty %}
+                <p>No hay próximos partidos disponibles.</p>
+            {% endfor %}
+
+            <p class="card-note">
+                Próximos partidos programados
+            </p>
+        </div>
+
+    </section>
+
+    <!-- CÓMO FUNCIONA -->
+    <section class="section">
+        <h2>Cómo funciona</h2>
+
+        <div class="grid-three">
+
+            <div class="card">
+                <span class="step-number">1</span>
+                <h3>Elige tu equipo</h3>
+                <p>
+                    Jugador o aficionado, cualquiera
+                    puede participar.
+                </p>
+            </div>
+
+            <div class="card">
+                <span class="step-number">2</span>
+                <h3>Selecciona tus 11</h3>
+                <p>
+                    Tu alineación se forma con
+                    jugadores de tu equipo.
+                </p>
+            </div>
+
+            <div class="card">
+                <span class="step-number">3</span>
+                <h3>Suma puntos</h3>
+                <p>
+                    Cada partido puntúa según
+                    estadísticas y votos.
+                </p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- EXPLORA -->
+    <section class="section">
+        <h2>Explora</h2>
+
+        <div class="grid-two">
+
+            <div class="card">
+                <h3>Clubes</h3>
+                <p>
+                    Consulta los clubes, sus equipos
+                    y sus plantillas.
+                </p>
+                <a href="{% url 'lista_clubes' %}">
+                    Ver clubes →
+                </a>
+            </div>
+
+            <div class="card">
+                <h3>Temporadas</h3>
+                <p>
+                    Navega por las temporadas,
+                    ligas y equipos.
+                </p>
+                <a href="{% url 'lista_temporadas' %}">
+                    Ver temporadas →
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ESTADÍSTICAS -->
+    <section class="stats">
+
+        <div>
+            <strong>{{ total_clubes }}</strong>
+            <span>clubes</span>
+        </div>
+
+        <div>
+            <strong>{{ total_equipos }}</strong>
+            <span>equipos</span>
+        </div>
+
+        <div>
+            <strong>{{ total_jugadores }}</strong>
+            <span>jugadores</span>
+        </div>
+
+        <div>
+            <strong>{{ total_usuarios }}</strong>
+            <span>usuarios</span>
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

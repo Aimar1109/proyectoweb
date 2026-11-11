@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Clubes</title>
-</head>
-<body>
+{% extends 'fantasy/base.html' %}
+
+{% block title %}Inicio - Fantasy Ligas Vascas{% endblock %}
+
+{% block content %}
 
     <h1>Lista de clubes</h1>
 
@@ -19,5 +17,4 @@
     {% endfor %}
 
     <p><a href="{% url 'index' %}">Volver al inicio</a></p>
-</body>
-</html>
+{% endblock %}

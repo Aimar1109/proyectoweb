@@ -1,0 +1,62 @@
+
+{% extends 'fantasy/base.html' %}
+
+{% block title %}Iniciar sesión - Fantasy{% endblock %}
+
+{% block content %}
+
+<div class="login-container">
+
+    <div class="login-card">
+
+        <h1>Iniciar sesión</h1>
+
+        <p>Accede a tu cuenta de Fantasy Ligas Vascas</p>
+
+        {% if form.errors %}
+            <p class="login-error">
+                Correo electrónico o contraseña incorrectos.
+            </p>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label for="id_username">Correo electrónico</label>
+            <input
+                type="email"
+                name="username"
+                id="id_username"
+                required
+            >
+
+            <label for="id_password">Contraseña</label>
+            <input
+                type="password"
+                name="password"
+                id="id_password"
+                required
+            >
+
+            <input
+                type="hidden"
+                name="next"
+                value="{{ next }}"
+            >
+
+            <button type="submit">
+                Iniciar sesión
+            </button>
+
+        </form>
+
+        <p>
+            ¿No tienes cuenta?
+            <a href="{% url 'index' %}">Regístrate</a>
+        </p>
+
+    </div>
+
+</div>
+
+{% endblock %}

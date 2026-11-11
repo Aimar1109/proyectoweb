@@ -4,7 +4,10 @@ from django.urls import path
 from fantasy import views
 
 urlpatterns = [
-    path("", views.index, name="index"),
+    path("", views.IndexView.as_view(), name="index"),
+
+    path("login/", views.UsuarioLoginView.as_view(), name="login"),
+    path('logout/', views.UsuarioLogoutView.as_view(), name='logout'),
 
     path("clubes/",views.lista_clubes,name="lista_clubes"),
     path("clubes/<int:pk>/",views.detalle_club,name="detalle_club"),
@@ -15,6 +18,4 @@ urlpatterns = [
     path("temporadas/<int:pk>/", views.detalle_temporada, name="detalle_temporada"),
 
     path("ligas/<int:pk>/", views.detalle_liga, name="detalle_liga"),
-
-    path("usuarios/<int:pk>/", views.detalle_usuario, name="detalle_usuario"),
 ]

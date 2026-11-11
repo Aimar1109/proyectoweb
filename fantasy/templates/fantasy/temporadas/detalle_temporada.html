@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Detalle de temporada</title>
-</head>
-<body>
+{% extends 'fantasy/base.html' %}
 
+{% block title %}Inicio - Fantasy Ligas Vascas{% endblock %}
+
+{% block content %}
     <h1>{{ temporada }}</h1>
 
     <h2>Ligas de la temporada</h2>
@@ -27,4 +24,4 @@
     <p><a href="{% url 'index' %}">Volver al inicio</a></p>
 
 </body>
-</html>
+{% endblock %}

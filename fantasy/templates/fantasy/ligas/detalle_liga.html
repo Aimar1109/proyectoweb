@@ -1,10 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ liga.nombre }}</title>
-</head>
-<body>
+{% extends 'fantasy/base.html' %}
+
+{% block title %}Inicio - Fantasy Ligas Vascas{% endblock %}
+
+{% block content %}
 
     <h1>{{ liga.nombre }}</h1>
 
@@ -27,4 +25,4 @@
     <p><a href="{% url 'index' %}">Volver al inicio</a></p>
 
 </body>
-</html>
+{% endblock %}
