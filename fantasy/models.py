@@ -273,7 +273,7 @@ class EstadisticaPartido(models.Model):
         return f"{self.jugador} - {self.partido}"
 
     def calcular_puntos(self):
-
+        self.puntos = 0
         if self.minutos > 60:
             self.puntos += 2
         elif self.minutos > 0:
