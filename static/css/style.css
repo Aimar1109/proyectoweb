@@ -338,3 +338,192 @@ a {
     outline: 2px solid #195b24;
     outline-offset: 1px;
 }
+
+/* GRUPOS */
+
+.acciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 22px 0 30px;
+}
+
+.boton {
+    display: inline-block;
+    background: #195b24;
+    color: white;
+    border: 2px solid #195b24;
+    padding: 12px 22px;
+    border-radius: 5px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.boton:hover {
+    background: #123f1a;
+    border-color: #123f1a;
+}
+
+.boton-sec {
+    background: white;
+    color: #195b24;
+}
+
+.boton-sec:hover {
+    background: #e8f0e8;
+    color: #195b24;
+    border-color: #195b24;
+}
+
+.boton:focus-visible {
+    outline: 2px solid #195b24;
+    outline-offset: 2px;
+}
+
+.meta {
+    color: #58655b;
+    font-size: 15px;
+}
+
+.vacio {
+    padding: 20px;
+    border: 1px dashed #b9c5ba;
+    border-radius: 10px;
+    color: #58655b;
+    line-height: 1.6;
+}
+
+/* Lista de mis grupos */
+
+.lista-grupos {
+    display: grid;
+    gap: 14px;
+}
+
+.grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 18px 22px;
+    background: white;
+    border: 1px solid #d9e0d9;
+    border-radius: 10px;
+    color: #263128;
+    text-decoration: none;
+}
+
+.grupo strong {
+    font-size: 18px;
+    color: #173c22;
+}
+
+.grupo:hover {
+    border-color: #195b24;
+}
+
+/* Detalle del grupo */
+
+.codigo {
+    display: inline-block;
+    padding: 3px 10px;
+    background: #e8f0e8;
+    border-radius: 5px;
+    color: #123f1a;
+    font-family: monospace;
+    font-size: 18px;
+    letter-spacing: 3px;
+}
+
+.tabla-ranking {
+    width: 100%;
+    max-width: 560px;
+    background: white;
+    border: 1px solid #d9e0d9;
+    border-collapse: collapse;
+}
+
+.tabla-ranking th,
+.tabla-ranking td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e5e9e5;
+    text-align: left;
+}
+
+.tabla-ranking th {
+    background: #f1f5f1;
+    color: #173c22;
+}
+
+.tabla-ranking th:last-child,
+.tabla-ranking td:last-child {
+    text-align: right;
+}
+
+.tabla-ranking .yo {
+    background: #e8f0e8;
+    font-weight: bold;
+}
+
+.salir {
+    margin-top: 28px;
+}
+
+/* Formularios de crear grupo y unirse */
+
+.formulario {
+    max-width: 460px;
+    padding: 28px;
+    background: white;
+    border: 1px solid #d9e0d9;
+    border-radius: 12px;
+}
+
+.campo {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.campo label {
+    font-weight: bold;
+}
+
+.campo input,
+.campo select {
+    padding: 12px;
+    border: 1px solid #d9e0d9;
+    border-radius: 6px;
+    background: white;
+    font-family: inherit;
+    font-size: 15px;
+}
+
+.campo input:focus,
+.campo select:focus {
+    outline: 2px solid #195b24;
+    outline-offset: 1px;
+}
+
+.input-codigo {
+    font-family: monospace;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+/* Avisos de las vistas (django messages) */
+
+.aviso {
+    padding: 12px 16px;
+    margin: 0 0 20px;
+    background: #e8f0e8;
+    border-radius: 6px;
+}
+
+.aviso.error {
+    background: #fdecea;
+    color: #b91c1c;
+}

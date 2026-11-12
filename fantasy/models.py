@@ -1,5 +1,8 @@
+import secrets
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models.aggregates import Sum
 
 # Create your models here.
 
@@ -87,10 +90,18 @@ class Usuario(AbstractUser):
         return self.alias
 
 class Grupo(models.Model):
+    MAX_MIEMBROS = 30 # HABRA QUE VER CUANTOS USUARIOS QUEREMOS TENER COMO MAXIMO
     nombre = models.CharField(max_length=100)
     creador = models.ForeignKey(Usuario, null=True, on_delete=models.SET_NULL, related_name="grupos_creados")
     liga = models.ForeignKey(Liga, on_delete=models.CASCADE, related_name="grupos")
     fecha_alta = models.DateField(auto_now_add=True)
+
+    codigo = models.CharField(max_length=8, unique=True, editable=False)
+
+    def save(self, *args, **kwargs):
+        if not self.codigo:
+            self.codigo = secrets.token_hex(4).upper()
+        super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Grupo"
@@ -108,10 +119,12 @@ class Membresia(models.Model):
     usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="membresias")
     grupo = models.ForeignKey(Grupo, on_delete=models.CASCADE, related_name="membresias")
     fecha_alta = models.DateField(auto_now_add=True)
+    puntos = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = "Membresia"
         verbose_name_plural = "Membresias"
+        ordering = ["-puntos"]
         constraints = [
             models.UniqueConstraint(
                 fields=["usuario", "grupo"],
@@ -120,26 +133,11 @@ class Membresia(models.Model):
 
     def __str__(self):
         return f"{self.usuario} ({self.grupo})"
-    
 
-class Participacion(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name="participaciones")
-    liga = models.ForeignKey(Liga, on_delete=models.CASCADE, related_name="participaciones")
-    fecha_alta = models.DateField(auto_now_add=True)
-    puntos = models.IntegerField(default=0)
+    def recalcular_puntos(membresia):
+        membresia.puntos = membresia.alineaciones.aggregate(t=Sum("puntos"))["t"] or 0
+        membresia.save()
 
-    class Meta:
-        verbose_name = "Participacion"
-        verbose_name_plural = "Participaciones"
-        ordering = ["-puntos"]
-        constraints = [
-            models.UniqueConstraint(
-                fields=["usuario", "liga"],
-                name="una_participacion_por_liga"),
-        ]
-
-    def __str__(self):
-        return f"{self.usuario} ({self.liga})"
 
 class Jugador(models.Model):
     class Posicion(models.TextChoices):
@@ -183,25 +181,37 @@ class Jornada(models.Model):
         ]
 
     def __str__(self):
-        return f"Jornada {self.numero} - {self.liga}"
+        return f"{self.numero} - {self.liga}"
 
         
 
 class Alineacion(models.Model):
-    usuario = models.OneToOneField(
-        "Usuario", on_delete=models.CASCADE, related_name="alineacion",
-    )
-    jugadores = models.ManyToManyField(
-        "Jugador", blank=True, related_name="elegido_en",
-    )
-    actualizada = models.DateTimeField(auto_now=True)
+    membresia = models.ForeignKey(Membresia, on_delete=models.CASCADE, related_name="alineaciones")
+    jornada = models.ForeignKey(Jornada, on_delete=models.CASCADE, related_name="alineaciones")
+    jugadores = models.ManyToManyField("Jugador", blank=True, related_name="elegido_en")
+
+    puntos = models.IntegerField(default=0)
 
     class Meta:
         verbose_name = "Alineación"
         verbose_name_plural = "Alineaciones"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["membresia", "jornada"],
+                name="una_alineacion_por_membresia_y_jornada"
+            )
+        ]
 
     def __str__(self):
-        return f"Alineación de {self.usuario}"
+        return f"{self.membresia} - {self.jornada}"
+
+    def calcular_puntos(self):
+        self.puntos = EstadisticaPartido.objects.filter(
+            jugador__in=self.jugadores.all(),
+            partido__jornada=self.jornada,
+        ).aggregate(t=Sum("puntos"))["t"] or 0
+        self.save(update_fields=["puntos"])
+        return self.puntos
 
 
 class Partido(models.Model):
@@ -248,6 +258,7 @@ class EstadisticaPartido(models.Model):
     goles = models.PositiveSmallIntegerField(default=0)
     amarillas = models.PositiveSmallIntegerField(default=0)
     rojas = models.PositiveSmallIntegerField(default=0)
+    porteria_cero = models.BooleanField(default=False)
     puntos = models.IntegerField(default=0)
 
     class Meta:
@@ -260,3 +271,21 @@ class EstadisticaPartido(models.Model):
 
     def __str__(self):
         return f"{self.jugador} - {self.partido}"
+
+    def calcular_puntos(self):
+
+        if self.minutos > 60:
+            self.puntos += 2
+        elif self.minutos > 0:
+            self.puntos += 1
+        if self.goles > 0:
+            self.puntos += 4*self.goles
+        if self.rojas > 0:
+            self.puntos -= 4
+        elif self.amarillas > 0:
+            self.puntos -= 2
+        if self.porteria_cero:
+           self.puntos += 2
+
+        return self.puntos
+        

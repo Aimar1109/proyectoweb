@@ -1,0 +1,33 @@
+{% extends "fantasy/base.html" %}
+
+{% block titulo %}Mis grupos · Fantasy Ligas Vascas{% endblock %}
+
+{% block content %}
+    <h1>Mis grupos</h1>
+    <p>Compite con tus amigos dentro de una liga. Cada grupo tiene su propia clasificación.</p>
+
+    <div class="acciones">
+        <a class="boton" href="{% url 'crear_grupo' %}">Crear un grupo</a>
+        <a class="boton boton-sec" href="{% url 'unirse_grupo' %}">Unirme con un código</a>
+    </div>
+
+    {% if grupos %}
+        <div class="lista-grupos">
+            {% for grupo in grupos %}
+                <a class="grupo" href="{% url 'detalle_grupo' grupo.pk %}">
+                    <strong>{{ grupo.nombre }}</strong>
+                    <span class="meta">{{ grupo.liga.nombre }}</span>
+                    <span class="meta">
+                        {{ grupo.membresias.count }} de {{ grupo.MAX_MIEMBROS }} miembros
+                        {% if grupo.creador == request.user %}(lo has creado tú){% endif %}
+                    </span>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="vacio">
+            Todavía no estás en ningún grupo. Crea uno y comparte el código con tus amigos,
+            o pide el código de un grupo que ya exista.
+        </p>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,39 @@
+{% extends "fantasy/base.html" %}
+
+{% block titulo %}Crear grupo · Fantasy Ligas Vascas{% endblock %}
+
+{% block content %}
+    <p><a href="{% url 'mis_grupos' %}">Volver a mis grupos</a></p>
+
+    <h1>Crear un grupo</h1>
+    <p>Tú serás el primer miembro. Al terminar verás un código para invitar a los demás.</p>
+
+    <form method="post" class="formulario">
+        {% csrf_token %}
+
+        <div class="campo">
+            <label for="nombre">Nombre del grupo</label>
+            <input id="nombre" name="nombre" type="text" maxlength="100" required
+                   value="{{ request.POST.nombre }}">
+        </div>
+
+        <div class="campo">
+            <label for="liga">Liga</label>
+            <select id="liga" name="liga" required>
+                <option value="" disabled {% if not request.POST.liga and not request.GET.liga %}selected{% endif %}>
+                    Elige una liga
+                </option>
+                {% for l in ligas %}
+                    <option value="{{ l.pk }}"
+                        {% if request.POST.liga == l.pk|stringformat:"s" or request.GET.liga == l.pk|stringformat:"s" %}selected{% endif %}>
+                        {{ l.nombre }} ({{ l.temporada }})
+                    </option>
+                {% empty %}
+                    <option value="" disabled>No hay ligas disponibles</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <button type="submit" class="boton">Crear grupo</button>
+    </form>
+{% endblock %}

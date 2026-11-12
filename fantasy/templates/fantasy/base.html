@@ -17,6 +17,10 @@
         <nav class="navbar-links">
             <a href="{% url 'lista_clubes' %}">Clubes</a>
             <a href="{% url 'lista_temporadas' %}">Temporadas</a>
+            
+            {% if user.is_authenticated %}
+                <a href="{% url 'mis_grupos' %}">Mis grupos</a>
+            {% endif %}
         </nav>
 
         <div class="navbar-auth">
@@ -40,6 +44,9 @@
     </header>
 
     <main>
+        {% for m in messages %}
+            <p class="aviso {{ m.tags }}">{{ m }}</p>
+        {% endfor %}
         {% block content %}{% endblock %}
     </main>
 

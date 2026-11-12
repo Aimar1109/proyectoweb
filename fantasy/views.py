@@ -1,20 +1,23 @@
-from django.shortcuts import render, get_object_or_404
+from pyexpat.errors import messages
+
+from django.shortcuts import redirect, render, get_object_or_404
+
+from . import servicios
 
 from .forms import RegistroForm
-from .models import Club, Equipo, Temporada,Liga,Usuario
+from .models import Club, Equipo, Grupo, Temporada,Liga,Usuario, Partido, Jugador
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse_lazy
 from django.contrib.auth import login
 
-# Create your views here.
-
+from django.contrib.auth.decorators import login_required
 
 from django.views.generic import CreateView, TemplateView
 from django.utils import timezone
-
-from .models import Club, Equipo, Jugador, Usuario, Partido
+from django.core.exceptions import ValidationError
+from django.views.decorators.http import require_POST
 
 
 class IndexView(TemplateView):
@@ -98,3 +101,61 @@ class RegistroView(CreateView):
         response = super().form_valid(form)
         login(self.request, self.object)
         return response
+
+# GRUPOS
+
+@login_required
+def mis_grupos(request):
+    grupos = Grupo.objects.filter(membresias__usuario=request.user).select_related("liga")
+    return render(request, "fantasy/grupos/mis_grupos.html", {"grupos": grupos})
+
+@login_required
+def crear_grupo(request):
+    ligas = Liga.objects.select_related("temporada")
+    if request.method == ["POST"]:
+        try:
+            liga = Liga.objects.filter(pk=request.POST.get("liga") or None).first()
+        except ValueError:
+            liga = None
+        if liga is None:
+            messages.error(request, "Elige una liga.")
+        else:
+            try:
+                grupo = servicios.crear_grupo(request.user, liga, request.POST.get("nombre", ""))
+                return redirect("clasificacion.html", pk = grupo.pk)
+            except ValidationError as e:
+                messages.error(request, e.message)
+    return render(request, "fantasy/grupos/crear_grupo.html", {"ligas": ligas})
+
+@login_required
+def unirse_grupo(request):
+    if request.method == "POST":
+        try:
+            grupo = servicios.unirse_a_grupo(request.user, request.POST.get("codigo", ""))
+            return redirect("detalle_grupo", pk=grupo.pk)
+        except ValidationError as e:
+            messages.error(request, e.message)
+    return render(request, "fantasy/grupos/unirse_grupo.html")
+
+@login_required
+def clasificacion_grupo(request, pk):
+    grupo = get_object_or_404(Grupo, pk=pk)
+    if not grupo.membresias.filter(usuario=request.user).exists():
+        return redirect("unirse_grupo")  # solo los miembros ven el grupo
+    ranking = (
+        grupo.membresias
+        .select_related("usuario")
+        .order_by("-puntos", "usuario__alias")
+    )
+    return render(request, "fantasy/grupos/clasificacion.html",
+                  {"grupo": grupo, "ranking": ranking})
+
+@login_required
+@require_POST
+def salir_grupo(request, pk):
+    grupo = get_object_or_404(Grupo, pk=pk)
+    if grupo.creador_id == request.user.pk:
+        messages.error(request, "El creador no puede abandonar el grupo.")
+        return redirect("detalle_grupo", pk=pk)
+    grupo.membresias.filter(usuario=request.user).delete()
+    return redirect("mis_grupos")

@@ -19,4 +19,10 @@ urlpatterns = [
     path("temporadas/<int:pk>/", views.detalle_temporada, name="detalle_temporada"),
 
     path("ligas/<int:pk>/", views.detalle_liga, name="detalle_liga"),
+
+    path("grupos/", views.mis_grupos, name="mis_grupos"),
+    path("grupos/unirse/", views.unirse_grupo, name="unirse_grupo"),
+    path("grupos/<int:pk>/", views.clasificacion_grupo, name="clasificacion"),
+    path("grupos/<int:pk>/salir/", views.salir_grupo, name="salir_grupo"),
+    path("grupos/nuevo/", views.crear_grupo, name="crear_grupo"),
 ]

@@ -1,0 +1,48 @@
+{% extends "fantasy/base.html" %}
+
+{% block titulo %}{{ grupo.nombre }} · Fantasy Ligas Vascas{% endblock %}
+
+{% block content %}
+    <p><a href="{% url 'mis_grupos' %}">Volver a mis grupos</a></p>
+
+    <h1>{{ grupo.nombre }}</h1>
+    <p class="meta">
+        {{ grupo.liga.nombre }}. {{ grupo.membresias.count }} de {{ grupo.MAX_MIEMBROS }} miembros.
+    </p>
+
+    <p>
+        Para invitar a alguien, pásale este código:
+        <strong class="codigo">{{ grupo.codigo }}</strong>
+    </p>
+
+    <h2>Clasificación</h2>
+    {% if ranking %}
+        <table class="tabla-ranking">
+            <thead>
+                <tr>
+                    <th scope="col">Puesto</th>
+                    <th scope="col">Jugador</th>
+                    <th scope="col">Puntos</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in ranking %}
+                    <tr {% if p.usuario == request.user %}class="yo"{% endif %}>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ p.usuario.alias }}</td>
+                        <td>{{ p.puntos }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="vacio">Aún no hay puntos. La clasificación aparecerá cuando se calcule la primera jornada.</p>
+    {% endif %}
+
+    {% if grupo.creador != request.user %}
+        <form method="post" action="{% url 'salir_grupo' grupo.pk %}" class="salir">
+            {% csrf_token %}
+            <button type="submit" class="boton boton-sec">Salir del grupo</button>
+        </form>
+    {% endif %}
+{% endblock %}
