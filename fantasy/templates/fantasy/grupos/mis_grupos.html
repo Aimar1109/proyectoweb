@@ -14,7 +14,7 @@
     {% if grupos %}
         <div class="lista-grupos">
             {% for grupo in grupos %}
-                <a class="grupo" href="{% url 'detalle_grupo' grupo.pk %}">
+                <a class="grupo" href="{% url 'clasificacion' grupo.pk %}">
                     <strong>{{ grupo.nombre }}</strong>
                     <span class="meta">{{ grupo.liga.nombre }}</span>
                     <span class="meta">

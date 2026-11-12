@@ -132,7 +132,7 @@ def unirse_grupo(request):
     if request.method == "POST":
         try:
             grupo = servicios.unirse_a_grupo(request.user, request.POST.get("codigo", ""))
-            return redirect("detalle_grupo", pk=grupo.pk)
+            return redirect("clasificacion", pk=grupo.pk)
         except ValidationError as e:
             messages.error(request, e.message)
     return render(request, "fantasy/grupos/unirse_grupo.html")
@@ -156,6 +156,6 @@ def salir_grupo(request, pk):
     grupo = get_object_or_404(Grupo, pk=pk)
     if grupo.creador_id == request.user.pk:
         messages.error(request, "El creador no puede abandonar el grupo.")
-        return redirect("detalle_grupo", pk=pk)
+        return redirect("clasificacion", pk=pk)
     grupo.membresias.filter(usuario=request.user).delete()
     return redirect("mis_grupos")
