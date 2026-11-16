@@ -1,0 +1,21 @@
+{% extends "fantasy/base.html" %}
+
+{% block title %}Alineación · {{ grupo.nombre }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <section class="section">
+        <div class="card">
+            <h1>Alineación de {{ grupo.nombre }}</h1>
+            <p>Liga: <strong>{{ grupo.liga.nombre }}</strong></p>
+            <p>Tus puntos en este grupo: <strong>{{ membresia.puntos }} pts</strong></p>
+
+            <div style="margin-top: 1.5rem;">
+                <a href="{% url 'clasificacion' grupo.pk %}" class="btn-secondary">
+                    ← Volver al grupo
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

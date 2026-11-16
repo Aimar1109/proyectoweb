@@ -23,6 +23,7 @@ urlpatterns = [
     path("grupos/", views.mis_grupos, name="mis_grupos"),
     path("grupos/unirse/", views.unirse_grupo, name="unirse_grupo"),
     path("grupos/<int:pk>/", views.clasificacion_grupo, name="clasificacion"),
+    path("grupos/<int:pk>/alineacion/", views.alineacion, name="alineacion"),
     path("grupos/<int:pk>/salir/", views.salir_grupo, name="salir_grupo"),
     path("grupos/nuevo/", views.crear_grupo, name="crear_grupo"),
 ]

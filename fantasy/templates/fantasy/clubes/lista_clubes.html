@@ -1,20 +1,44 @@
 {% extends 'fantasy/base.html' %}
 
-{% block title %}Inicio - Fantasy Ligas Vascas{% endblock %}
+{% block title %}Clubes - Fantasy Ligas Vascas{% endblock %}
 
 {% block content %}
 
-    <h1>Lista de clubes</h1>
+<div class="container">
 
-    {% for club in clubes %}
-        <p>
-            <a href="{% url 'detalle_club' club.pk %}">
-                {{ club.nombre }}
+    <section class="section">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+            <div>
+                <h1>Lista de clubes</h1>
+                <p>Consulta los clubes inscritos, sus equipos y sus plantillas.</p>
+            </div>
+
+            <a href="{% url 'index' %}" class="btn-secondary">
+                ← Volver al inicio
             </a>
-        </p>
-    {% empty %}
-        <p>No hay clubes registrados.</p>
-    {% endfor %}
+        </div>
 
-    <p><a href="{% url 'index' %}">Volver al inicio</a></p>
+        <div class="grid-three">
+            {% for club in clubes %}
+                <div class="card">
+                    <span class="step-number">{{ forloop.counter }}</span>
+                    <h3>{{ club.nombre }}</h3>
+                    <p>
+                        Explora los equipos y jugadores disponibles de este club.
+                    </p>
+                    <a href="{% url 'detalle_club' club.pk %}">
+                        Ver club →
+                    </a>
+                </div>
+            {% empty %}
+                <div class="card">
+                    <h3>Sin clubes</h3>
+                    <p>No hay clubes registrados en este momento.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</div>
+
 {% endblock %}

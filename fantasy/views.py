@@ -141,7 +141,10 @@ def unirse_grupo(request):
 def clasificacion_grupo(request, pk):
     grupo = get_object_or_404(Grupo, pk=pk)
     if not grupo.membresias.filter(usuario=request.user).exists():
-        return redirect("unirse_grupo")  # solo los miembros ven el grupo
+        return redirect("unirse_grupo")
+
+    request.session["grupo_activo_id"] = grupo.pk
+
     ranking = (
         grupo.membresias
         .select_related("usuario")
@@ -149,6 +152,19 @@ def clasificacion_grupo(request, pk):
     )
     return render(request, "fantasy/grupos/clasificacion.html",
                   {"grupo": grupo, "ranking": ranking})
+
+@login_required
+def alineacion(request, pk):
+    grupo = get_object_or_404(Grupo, pk=pk)
+    membresia = grupo.membresias.filter(usuario=request.user).first()
+    if not membresia:
+        return redirect("unirse_grupo")
+
+    request.session["grupo_activo_id"] = grupo.pk
+    return render(request, "fantasy/grupos/alineacion.html", {
+        "grupo": grupo,
+        "membresia": membresia,
+    })
 
 @login_required
 @require_POST
