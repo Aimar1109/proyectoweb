@@ -20,8 +20,8 @@
             
             {% if user.is_authenticated %}
                 <a href="{% url 'mis_grupos' %}">Mis grupos</a>
-                {% if request.session.grupo_activo_id %}
-                    <a href="{% url 'alineacion' request.session.grupo_activo_id %}">Alineación</a>
+                {% if grupo and grupo.pk %}
+                    <a href="{% url 'alineacion' grupo.pk %}">Alineación</a>
                 {% endif %}
             {% endif %}
         </nav>

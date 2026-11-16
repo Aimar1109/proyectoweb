@@ -143,8 +143,6 @@ def clasificacion_grupo(request, pk):
     if not grupo.membresias.filter(usuario=request.user).exists():
         return redirect("unirse_grupo")
 
-    request.session["grupo_activo_id"] = grupo.pk
-
     ranking = (
         grupo.membresias
         .select_related("usuario")
