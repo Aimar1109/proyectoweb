@@ -26,4 +26,7 @@ urlpatterns = [
     path("grupos/<int:pk>/alineacion/", views.alineacion, name="alineacion"),
     path("grupos/<int:pk>/salir/", views.salir_grupo, name="salir_grupo"),
     path("grupos/nuevo/", views.crear_grupo, name="crear_grupo"),
+
+    path("grupos/membresia/<int:pk>/puntos/",views.lista_puntos,name="lista_puntos"),
+    path("grupos/membresia/<int:pk>/puntos/<int:jornada_pk>/",views.detalle_puntos,name="detalle_puntos")
 ]

@@ -1,0 +1,20 @@
+{% extends "fantasy/base.html" %} 
+
+{% block content %}
+<h1>Puntos por jornada de {{ membresia.usuario.alias }}</h1>
+<p>Grupo: {{ membresia.grupo.nombre }} | Total acumulado: <strong>{{ membresia.puntos }} pts</strong></p>
+
+<ul>
+    {% for alineacion in alineaciones %}
+        <li>
+            <a href="{% url 'detalle_puntos' membresia.pk alineacion.jornada.pk %}">
+                Jornada {{ alineacion.jornada.numero }} — <strong>{{ alineacion.puntos }} pts</strong>
+            </a>
+        </li>
+    {% empty %}
+        <li>Este usuario aún no tiene jornadas puntuadas.</li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'clasificacion' membresia.grupo.pk %}">← Volver a la clasificación</a>
+{% endblock %}

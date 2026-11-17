@@ -1,11 +1,11 @@
-from pyexpat.errors import messages
+from django.contrib import messages
 
 from django.shortcuts import redirect, render, get_object_or_404
 
 from . import servicios
 
 from .forms import RegistroForm
-from .models import Club, Equipo, Grupo, Temporada,Liga,Usuario, Partido, Jugador
+from .models import Alineacion, Club, Equipo, EstadisticaPartido, Grupo, Membresia, Temporada,Liga,Usuario, Partido, Jugador
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
@@ -112,7 +112,7 @@ def mis_grupos(request):
 @login_required
 def crear_grupo(request):
     ligas = Liga.objects.select_related("temporada")
-    if request.method == ["POST"]:
+    if request.method == "POST":
         try:
             liga = Liga.objects.filter(pk=request.POST.get("liga") or None).first()
         except ValueError:
@@ -122,7 +122,7 @@ def crear_grupo(request):
         else:
             try:
                 grupo = servicios.crear_grupo(request.user, liga, request.POST.get("nombre", ""))
-                return redirect("clasificacion.html", pk = grupo.pk)
+                return redirect("clasificacion", pk = grupo.pk)
             except ValidationError as e:
                 messages.error(request, e.message)
     return render(request, "fantasy/grupos/crear_grupo.html", {"ligas": ligas})
@@ -173,3 +173,55 @@ def salir_grupo(request, pk):
         return redirect("clasificacion", pk=pk)
     grupo.membresias.filter(usuario=request.user).delete()
     return redirect("mis_grupos")
+
+
+@login_required
+def lista_puntos(request, pk):
+    membresia = get_object_or_404(
+        Membresia.objects.select_related("usuario", "grupo"),
+        pk=pk
+    )
+    if not membresia.grupo.membresias.filter(usuario=request.user).exists():
+        return redirect("unirse_grupo")
+
+    alineaciones = (
+        membresia.alineaciones
+        .select_related("jornada")
+        .order_by("jornada__numero")
+    )
+    return render(request, "fantasy/grupos/lista_puntos.html", {
+        "membresia": membresia,
+        "alineaciones": alineaciones,
+    })
+
+
+@login_required
+def detalle_puntos(request, pk, jornada_pk):
+    alineacion = get_object_or_404(
+        Alineacion.objects.select_related("membresia__usuario", "membresia__grupo", "jornada"),
+        membresia_id=pk,
+        jornada_id=jornada_pk
+    )
+    if not alineacion.membresia.grupo.membresias.filter(usuario=request.user).exists():
+        return redirect("unirse_grupo")
+
+    stats = EstadisticaPartido.objects.filter(
+        jugador__in=alineacion.jugadores.all(),
+        partido__jornada=alineacion.jornada
+    )
+    puntos_por_jugador = {}
+    for stat in stats:
+        puntos_por_jugador[stat.jugador_id] = puntos_por_jugador.get(stat.jugador_id, 0) + stat.puntos
+
+    jugadores_con_puntos = [
+        {
+            "jugador": jugador,
+            "puntos": puntos_por_jugador.get(jugador.id, 0)
+        }
+        for jugador in alineacion.jugadores.select_related("equipo").all()
+    ]
+
+    return render(request, "fantasy/grupos/detalle_puntos.html", {
+        "alineacion": alineacion,
+        "jugadores_con_puntos": jugadores_con_puntos,
+    })

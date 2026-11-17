@@ -29,7 +29,7 @@
                 {% for p in ranking %}
                     <tr {% if p.usuario == request.user %}class="yo"{% endif %}>
                         <td>{{ forloop.counter }}</td>
-                        <td>{{ p.usuario.alias }}</td>
+                        <td><a href="{% url 'lista_puntos' p.pk %}">{{ p.usuario.alias }}</a></td>
                         <td>{{ p.puntos }}</td>
                     </tr>
                 {% endfor %}
