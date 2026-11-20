@@ -1,27 +1,46 @@
 {% extends 'fantasy/base.html' %}
+{% load static %}
 
-{% block title %}Inicio - Fantasy Ligas Vascas{% endblock %}
+{% block title %}{{ club.nombre }} - Fantasy Ligas Vascas{% endblock %}
 
 {% block content %}
 
-    <h1>{{ club.nombre }}</h1>
+    <div class="card club-card">
+        <div class="club-header">
+            {% with 'img/escudos/'|add:club.nombre|add:'.png' as ruta_escudo %}
+                <img src="{% static ruta_escudo %}" 
+                     alt="Escudo de {{ club.nombre }}" 
+                     class="club-escudo"
+                     onerror="this.style.display='none'">
+            {% endwith %}
+            
+            <div>
+                <h1>{{ club.nombre }}</h1>
+                <p class="meta"><strong>Email:</strong> {{ club.email }}</p>
+                <p class="meta"><strong>Dirección:</strong> {{ club.direccion }}</p>
+            </div>
+        </div>
+    </div>
 
-    <p>Email: {{ club.email }}</p>
-    <p>Dirección: {{ club.direccion }}</p>
+    <div class="section">
+        <h2>Equipos del club</h2>
 
-    <h2>Equipos del club</h2>
+        <div class="lista-grupos">
+            {% for equipo in equipos %}
+                <a href="{% url 'detalle_equipo' equipo.pk %}" class="grupo">
+                    <strong>{{ equipo.nombre }}</strong>
+                </a>
+            {% empty %}
+                <div class="vacio">
+                    Este club no tiene equipos registrados.
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 
-    {% for equipo in equipos %}
-        <p>
-            <a href="{% url 'detalle_equipo' equipo.pk %}">
-                {{ equipo.nombre }}
-            </a>
-        </p>
-    {% empty %}
-        <p>Este club no tiene equipos.</p>
-    {% endfor %}
+    <div class="acciones">
+        <a href="{% url 'lista_clubes' %}" class="boton boton-sec">Volver a clubes</a>
+        <a href="{% url 'index' %}" class="boton boton-sec">Volver al inicio</a>
+    </div>
 
-    <p><a href="{% url 'lista_clubes' %}">Volver a clubes</a></p>
-    <p><a href="{% url 'index' %}">Volver al inicio</a></p>
-</body>
 {% endblock %}

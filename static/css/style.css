@@ -527,3 +527,43 @@ a {
     background: #fdecea;
     color: #b91c1c;
 }
+
+/* CLUBES */
+
+.club-card {
+    margin-bottom: 35px;
+}
+
+.club-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.club-header h1 {
+    margin: 0 0 8px;
+    color: #173c22;
+    font-size: 32px;
+}
+
+.club-header .meta {
+    margin: 4px 0;
+}
+
+.club-escudo {
+    width: 15px;
+    height: 15px;
+    object-fit: contain;
+    background: #f7f9f6;
+    border: 1px solid #d9e0d9;
+    border-radius: 10px;
+    padding: 8px;
+    flex-shrink: 0;
+}
+
+@media (max-width: 750px) {
+    .club-header {
+        flex-direction: column;
+        text-align: center;
+    }
+}
