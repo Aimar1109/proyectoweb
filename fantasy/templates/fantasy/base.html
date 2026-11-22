@@ -20,8 +20,14 @@
             
             {% if user.is_authenticated %}
                 <a href="{% url 'mis_grupos' %}">Mis grupos</a>
-                {% if grupo and grupo.pk %}
-                    <a href="{% url 'alineacion' grupo.pk %}">Alineación</a>
+                {% if grupo_activo %}
+                    <span class="navbar-grupo">{{ grupo_activo.nombre }}</span>
+                    <a href="{% url 'clasificacion' grupo_activo.pk %}"
+                       {% if request.resolver_match.url_name == 'clasificacion' %}aria-current="page"{% endif %}>Clasificación</a>
+                    <a href="{% url 'alineacion' grupo_activo.pk %}"
+                       {% if request.resolver_match.url_name == 'alineacion' %}aria-current="page"{% endif %}>Alineación</a>
+                    <a href="{% url 'lista_puntos' membresia_activa.pk %}"
+                       {% if request.resolver_match.url_name == 'lista_puntos' and request.resolver_match.kwargs.pk == membresia_activa.pk %}aria-current="page"{% endif %}>Mis puntos</a>
                 {% endif %}
             {% endif %}
         </nav>

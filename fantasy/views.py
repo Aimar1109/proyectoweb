@@ -145,6 +145,8 @@ def clasificacion_grupo(request, pk):
     if not grupo.membresias.filter(usuario=request.user).exists():
         return redirect("unirse_grupo")
 
+    request.session["grupo_activo_id"] = grupo.pk
+
     ranking = (
         grupo.membresias
         .select_related("usuario")
@@ -233,6 +235,8 @@ def lista_puntos(request, pk):
     if not membresia.grupo.membresias.filter(usuario=request.user).exists():
         return redirect("unirse_grupo")
 
+    request.session["grupo_activo_id"] = membresia.grupo.pk
+
     alineaciones = (
         membresia.alineaciones
         .select_related("jornada")
@@ -253,6 +257,8 @@ def detalle_puntos(request, pk, jornada_pk):
     )
     if not alineacion.membresia.grupo.membresias.filter(usuario=request.user).exists():
         return redirect("unirse_grupo")
+
+    request.session["grupo_activo_id"] = alineacion.membresia.grupo_id
 
     stats = EstadisticaPartido.objects.filter(
         jugador__in=alineacion.jugadores.all(),
