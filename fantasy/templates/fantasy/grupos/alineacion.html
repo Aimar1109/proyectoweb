@@ -8,7 +8,12 @@
         <div class="card">
             <h1>Alineación de {{ grupo.nombre }}</h1>
             <p>Liga: <strong>{{ grupo.liga.nombre }}</strong></p>
-            <p>Tus puntos en este grupo: <strong>{{ membresia.puntos }} pts</strong></p>
+            <p>
+                {% if jornada %}
+                    Jornada {{ jornada.numero }}
+                {% endif %}
+                Tus puntos en este grupo: <strong>{{ membresia.puntos }} pts</strong>
+            </p>
 
             <div class="acciones">
                 <a href="{% url 'clasificacion' grupo.pk %}" class="btn-secondary">
@@ -17,5 +22,265 @@
             </div>
         </div>
     </section>
+
+    <section class="section">
+
+        {% if jornada %}
+        <form method="post" id="al-form">
+            {% csrf_token %}
+            <div class="al-grid">
+
+                <!-- Campo con la formación 4-3-3 -->
+                <div class="al-card">
+                    <div class="al-campo">
+                        <div class="al-lineas" aria-hidden="true">
+                            <div class="al-centro"></div>
+                            <div class="al-area arriba"></div>
+                            <div class="al-area abajo"></div>
+                        </div>
+                        <div class="al-filas" id="al-filas"></div>
+                    </div>
+                </div>
+
+                <!-- Selector de jugadores -->
+                <div class="al-card">
+                    <h2>Seleccionar jugadores</h2>
+
+                    <div class="al-filtros">
+                        <div>
+                            <label for="al-filtro-pos">Posición</label>
+                            <select id="al-filtro-pos">
+                                <option value="">Todas</option>
+                                <option value="POR">Portero</option>
+                                <option value="DEF">Defensa</option>
+                                <option value="MED">Centrocampista</option>
+                                <option value="DEL">Delantero</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="al-filtro-equipo">Equipo</label>
+                            <select id="al-filtro-equipo">
+                                <option value="">Todos</option>
+                                {% for e in equipos %}
+                                    <option value="{{ e.pk }}">{{ e.nombre }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="busca">
+                            <label class="al-solo-lectura" for="al-busqueda">Buscar jugador</label>
+                            <input id="al-busqueda" type="search" placeholder="Buscar jugador...">
+                        </div>
+                    </div>
+
+                    <div class="al-scroll">
+                        <table class="al-tabla" id="al-tabla">
+                            <thead>
+                                <tr>
+                                    <th scope="col"><span class="al-solo-lectura">Elegir</span></th>
+                                    <th scope="col">Jugador</th>
+                                    <th scope="col">Equipo</th>
+                                    <th scope="col">Posición</th>
+                                    <th scope="col" class="al-num">Pts</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for j in jugadores %}
+                                    <tr data-id="{{ j.id }}" data-pos="{{ j.posicion }}"
+                                        data-equipo="{{ j.equipo_id }}" data-nombre="{{ j.nombre }}"
+                                        data-dorsal="{{ j.dorsal|default_if_none:'' }}">
+                                        <td>
+                                            <input type="checkbox" aria-label="Elegir a {{ j.nombre }}"
+                                                   {% if j.id in elegidos %}
+                                                        checked
+                                                   {% endif %}>
+                                        </td>
+                                        <td><strong>{{ j.nombre }}</strong></td>
+                                        <td>{{ j.equipo__nombre }}</td>
+                                        <td><span class="al-pos">{{ j.posicion }}</span></td>
+                                        <td class="al-num">{{ j.total_puntos }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <p class="vacio" id="al-sin-resultados" hidden>Ningún jugador coincide con los filtros.</p>
+                    </div>
+
+                    <div id="al-ocultos"></div>
+
+                    <div class="al-pie">
+                        <div>
+                            <div>Jugadores seleccionados: <strong id="al-contador">0 / 11</strong></div>
+                            <div class="meta" id="al-aviso" role="status"></div>
+                        </div>
+                        <button type="submit" class="boton" id="al-guardar" disabled>Guardar alineación</button>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+        <script>
+        (function () {
+            // Formación 4-3-3: de arriba (ataque) a abajo (portería)
+            const ORDEN = ["DEL", "MED", "DEF", "POR"];
+            const LIMITE = { DEL: 3, MED: 3, DEF: 4, POR: 1 };
+            const NOMBRE = {
+                DEL: ["delantero", "delanteros"], MED: ["centrocampista", "centrocampistas"],
+                DEF: ["defensa", "defensas"], POR: ["portero", "porteros"],
+            };
+            const TOTAL = 11;
+
+            const filas = [...document.querySelectorAll("#al-tabla tbody tr")];
+            const campo = document.getElementById("al-filas");
+            const ocultos = document.getElementById("al-ocultos");
+            const contador = document.getElementById("al-contador");
+            const aviso = document.getElementById("al-aviso");
+            const guardar = document.getElementById("al-guardar");
+            const filtroPos = document.getElementById("al-filtro-pos");
+            const filtroEquipo = document.getElementById("al-filtro-equipo");
+            const busqueda = document.getElementById("al-busqueda");
+            const sinResultados = document.getElementById("al-sin-resultados");
+
+            const datos = new Map();
+            filas.forEach(tr => datos.set(Number(tr.dataset.id), {
+                id: Number(tr.dataset.id), nombre: tr.dataset.nombre,
+                pos: tr.dataset.pos, dorsal: tr.dataset.dorsal, fila: tr,
+            }));
+
+            let seleccion = filas
+                .filter(tr => tr.querySelector("input").checked)
+                .map(tr => Number(tr.dataset.id));
+
+            function camiseta(texto) {
+                return '<svg viewBox="0 0 64 56" class="al-camiseta" aria-hidden="true">' +
+                    '<path d="M20 4 L8 10 L2 24 L14 29 L14 52 L50 52 L50 29 L62 24 L56 10 L44 4 ' +
+                    'C42 9 37 12 32 12 C27 12 22 9 20 4 Z" fill="#fff" stroke="#195b24" ' +
+                    'stroke-width="2" stroke-linejoin="round"/>' +
+                    '<text x="32" y="38" text-anchor="middle" font-size="22" font-weight="700" ' +
+                    'fill="#195b24">' + texto + '</text></svg>';
+            }
+
+            // Construir los huecos del campo
+            const huecos = {};
+            ORDEN.forEach(pos => {
+                const fila = document.createElement("div");
+                fila.className = "al-fila";
+                huecos[pos] = [];
+                for (let i = 0; i < LIMITE[pos]; i++) {
+                    const b = document.createElement("button");
+                    b.type = "button";
+                    b.className = "al-hueco";
+                    b.dataset.pos = pos;
+                    b.addEventListener("click", () => clicHueco(b));
+                    fila.appendChild(b);
+                    huecos[pos].push(b);
+                }
+                campo.appendChild(fila);
+            });
+
+            const delPuesto = pos => seleccion.filter(id => datos.get(id).pos === pos);
+            const apellido = nombre => nombre.trim().split(/\s+/).slice(-1)[0];
+
+            function plural(n, pos) {
+                return n + " " + NOMBRE[pos][n === 1 ? 0 : 1];
+            }
+
+            function render() {
+                ORDEN.forEach(pos => {
+                    const ids = delPuesto(pos);
+                    huecos[pos].forEach((b, i) => {
+                        const j = datos.get(ids[i]);
+                        b.dataset.id = j ? j.id : "";
+                        b.classList.toggle("lleno", Boolean(j));
+                        b.innerHTML = camiseta(j ? (String(Number(j.dorsal) || "•")) : "+");
+                        const etiqueta = document.createElement("span");
+                        etiqueta.className = "al-etiqueta";
+                        etiqueta.textContent = j ? apellido(j.nombre) : pos;
+                        b.appendChild(etiqueta);
+                        b.setAttribute("aria-label", j
+                            ? "Quitar a " + j.nombre
+                            : "Hueco libre de " + NOMBRE[pos][0] + ": pulsa para buscar uno");
+                    });
+                });
+
+                filas.forEach(tr => {
+                    const id = Number(tr.dataset.id);
+                    const casilla = tr.querySelector("input");
+                    const marcado = seleccion.includes(id);
+                    casilla.checked = marcado;
+                    casilla.disabled = !marcado && delPuesto(tr.dataset.pos).length >= LIMITE[tr.dataset.pos];
+                    tr.classList.toggle("elegida", marcado);
+                });
+
+                ocultos.replaceChildren(...seleccion.map(id => {
+                    const input = document.createElement("input");
+                    input.type = "hidden";
+                    input.name = "jugadores";
+                    input.value = id;
+                    return input;
+                }));
+
+                contador.textContent = seleccion.length + " / " + TOTAL;
+                guardar.disabled = seleccion.length !== TOTAL;
+
+                const faltan = ORDEN
+                    .map(pos => [pos, LIMITE[pos] - delPuesto(pos).length])
+                    .filter(([, n]) => n > 0)
+                    .map(([pos, n]) => plural(n, pos));
+                aviso.textContent = faltan.length ? "Te faltan: " + faltan.join(", ") + "." : "Alineación completa.";
+            }
+
+            function marcar(id, activo) {
+                const j = datos.get(id);
+                if (activo && !seleccion.includes(id) && delPuesto(j.pos).length < LIMITE[j.pos]) {
+                    seleccion.push(id);
+                } else if (!activo) {
+                    seleccion = seleccion.filter(x => x !== id);
+                }
+                render();
+            }
+
+            function clicHueco(b) {
+                if (b.dataset.id) {
+                    marcar(Number(b.dataset.id), false);
+                } else {
+                    filtroPos.value = b.dataset.pos;
+                    filtrar();
+                    busqueda.focus();
+                }
+            }
+
+            function filtrar() {
+                const texto = busqueda.value.trim().toLowerCase();
+                let visibles = 0;
+                filas.forEach(tr => {
+                    const ok =
+                        (!filtroPos.value || tr.dataset.pos === filtroPos.value) &&
+                        (!filtroEquipo.value || tr.dataset.equipo === filtroEquipo.value) &&
+                        (!texto || tr.dataset.nombre.toLowerCase().includes(texto));
+                    tr.hidden = !ok;
+                    if (ok) visibles++;
+                });
+                sinResultados.hidden = visibles > 0;
+            }
+
+            filas.forEach(tr => tr.querySelector("input").addEventListener("change", e =>
+                marcar(Number(tr.dataset.id), e.target.checked)));
+            [filtroPos, filtroEquipo].forEach(el => el.addEventListener("change", filtrar));
+            busqueda.addEventListener("input", filtrar);
+
+            document.getElementById("al-form").addEventListener("submit", e => {
+                if (seleccion.length !== TOTAL) e.preventDefault();
+            });
+
+            render();
+        })();
+        </script>
+
+        {% else %}
+            <p class="vacio">No hay ninguna jornada pendiente en esta liga. Vuelve cuando se publique la siguiente.</p>
+        {% endif %}
+    </section>
+
 </div>
 {% endblock %}

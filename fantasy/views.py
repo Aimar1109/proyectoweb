@@ -1,5 +1,7 @@
 from django.contrib import messages
 
+from django.db.models.aggregates import Sum
+from django.db.models.functions import Coalesce
 from django.shortcuts import redirect, render, get_object_or_404
 
 from . import servicios
@@ -159,9 +161,56 @@ def alineacion(request, pk):
         return redirect("unirse_grupo")
 
     request.session["grupo_activo_id"] = grupo.pk
+
+    jornada = (grupo.liga.jornadas.filter(partidos__goles_local__isnull=True)
+                                    .order_by("numero")
+                                    .first()
+                                    )
+
+    if request.method == "POST" and jornada:
+
+        try:
+            servicios.guardar_alineacion(membresia, jornada, request.POST.getlist("jugadores"))
+            messages.success(request, "Alineacion guardada")
+            return redirect("alineacion", pk=grupo.pk) 
+        
+        except ValidationError as e:
+            messages.error(request, e.messages)
+
+    jugadores = list(
+        Jugador.objects.filter(equipo__liga = grupo.liga)
+                       .annotate(total_puntos = Coalesce(Sum("estadisticas__puntos"), 0))
+                       .order_by("equipo__nombre", "dorsal")
+                       .values("id", "nombre", "posicion", "dorsal", "equipo_id",
+                               "equipo__nombre", "total_puntos")
+    )    
+
+    elegidos = []
+    precargada_de = None
+    if jornada:
+        actual = Alineacion.objects.filter(membresia=membresia, jornada=jornada).first()
+        if actual:
+            elegidos = list(actual.jugadores.values_list("id", flat=True)) # ?????????????
+        else:
+            anterior = (
+                Alineacion.objects.filter(membresia=membresia, jornada__numero__lt =jornada.numero)
+                                  .select_related("jornada")
+                                  .order_by("-jornada__numero")
+                                  .first()
+            )
+
+            if anterior:
+                elegidos = list(anterior.jugadores.values_list("id", flat=True))
+                precargada_de = anterior.jornada
+
     return render(request, "fantasy/grupos/alineacion.html", {
         "grupo": grupo,
         "membresia": membresia,
+        "jornada": jornada,
+        "jugadores": jugadores,
+        "elegidos": elegidos,
+        "precargada_de": precargada_de,
+        "equipos": Equipo.objects.filter(liga=grupo.liga).order_by("nombre"),
     })
 
 @login_required
