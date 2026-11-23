@@ -1,28 +1,76 @@
+
 {% extends 'fantasy/base.html' %}
 
-{% block title %}Inicio - Fantasy Ligas Vascas{% endblock %}
+{% block title %}{{ liga.nombre }} - Fantasy Ligas Vascas{% endblock %}
 
 {% block content %}
 
-    <h1>{{ liga.nombre }}</h1>
+<div class="liga-container">
 
-    <p>Categoría: {{ liga.categoria }}</p>
-    <p>Grupo: {{ liga.grupo }}</p>
+    <div class="liga-portada">
+        <div>
+            <h1>{{ liga.nombre }}</h1>
+            <p>{{ liga.categoria }} · Grupo {{ liga.grupo }}</p>
+        </div>
+        <span class="liga-trofeo">🏆</span>
+    </div>
 
-    <h2>Equipos de la liga</h2>
+    <section class="liga-section">
 
-    {% for equipo in equipos %}
-        <p>
-            <a href="{% url 'detalle_equipo' equipo.pk %}">
-                {{ equipo.nombre }}
-            </a>
-        </p>
-    {% empty %}
-        <p>Esta liga no tiene equipos.</p>
-    {% endfor %}
+        <h2>Clasificación</h2>
 
-    <p><a href="{% url 'lista_temporadas' %}">Volver a temporadas</a></p>
-    <p><a href="{% url 'index' %}">Volver al inicio</a></p>
+        <div class="clasificacion-scroll">
+            <table class="tabla-liga">
 
-</body>
+                <thead>
+                    <tr>
+                        <th>Pos.</th>
+                        <th>Equipo</th>
+                        <th>Puntos</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for fila in clasificacion %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+
+                        <td class="nombre-equipo">
+                            <a href="{% url 'detalle_equipo' fila.equipo.pk %}">
+                                {{ fila.equipo.nombre }}
+                            </a>
+                        </td>
+
+                        <td class="puntos-equipo">
+                            {{ fila.puntos }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="3">
+                            No hay equipos en esta liga.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+    </section>
+
+    <p>
+        <a href="{% url 'lista_temporadas' %}" class="boton boton-sec">
+            ← Volver a temporadas
+        </a>
+    </p>
+
+    <p>
+        <a href="{% url 'index' %}" class="boton">
+            Volver al inicio
+        </a>
+    </p>
+
+</div>
+
 {% endblock %}

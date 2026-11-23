@@ -1,5 +1,6 @@
 from django.contrib import messages
 
+from django.db import models
 from django.db.models.aggregates import Sum
 from django.db.models.functions import Coalesce
 from django.shortcuts import redirect, render, get_object_or_404
@@ -74,10 +75,52 @@ def detalle_temporada(request,pk):
 
 #LIGA | solo detalle porque tenemos la lista de ligas en el detalle de la temporada
 
-def detalle_liga(request,pk):
-    liga = get_object_or_404(Liga,pk=pk)
-    equipos = liga.equipos.all()
-    return render(request,"fantasy/ligas/detalle_liga.html",{"liga":liga,"equipos":equipos})
+
+def detalle_liga(request, pk):
+    liga = get_object_or_404(Liga, pk=pk)
+    equipos = liga.equipos.all().order_by("nombre")
+
+    clasificacion = []
+
+    for equipo in equipos:
+        puntos = 0
+
+        partidos = Partido.objects.filter(
+            jornada__liga=liga,
+            goles_local__isnull=False,
+            goles_visitante__isnull=False
+        ).filter(
+            models.Q(local=equipo) | models.Q(visitante=equipo)
+        )
+
+        for partido in partidos:
+            if partido.local_id == equipo.pk:
+                favor = partido.goles_local
+                contra = partido.goles_visitante
+            else:
+                favor = partido.goles_visitante
+                contra = partido.goles_local
+
+            if favor > contra:
+                puntos += 3
+            elif favor == contra:
+                puntos += 1
+
+        clasificacion.append({
+            "equipo": equipo,
+            "puntos": puntos
+        })
+
+    clasificacion.sort(
+        key=lambda x: (-x["puntos"], x["equipo"].nombre)
+    )
+
+    return render(request, "fantasy/ligas/detalle_liga.html", {
+        "liga": liga,
+        "equipos": equipos,
+        "clasificacion": clasificacion,
+    })
+
 
 #USUARIO
 
