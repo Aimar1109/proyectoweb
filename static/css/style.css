@@ -801,6 +801,21 @@ a {
     clip: rect(0 0 0 0);
 }
 
+/* DETALLE DE PUNTOS */
+
+.al-hueco.solo-ver {
+    cursor: default;
+}
+
+.al-puntos {
+    padding: 1px 8px;
+    background: #195b24;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 999px;
+}
+
 @media (max-width: 860px) {
     .al-grid { grid-template-columns: 1fr; }
     .al-campo { width: 100%; max-width: 440px; margin: 0 auto; }
