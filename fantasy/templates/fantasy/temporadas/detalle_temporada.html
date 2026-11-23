@@ -1,27 +1,42 @@
 {% extends 'fantasy/base.html' %}
 
-{% block title %}Inicio - Fantasy Ligas Vascas{% endblock %}
+{% block title %}Temporada {{ temporada }} - Fantasy Ligas Vascas{% endblock %}
 
 {% block content %}
-    <h1>{{ temporada }}</h1>
 
-    <h2>Ligas de la temporada</h2>
+<div class="temp-container">
 
-    {% for liga in ligas %}
-        <h3>
-            <a href="{% url 'detalle_liga' liga.pk %}">
-                {{ liga.nombre }}
+    <div class="liga-portada">
+        <h1>Temporada {{ temporada }}</h1>
+        <p>{{ ligas|length }} liga{{ ligas|length|pluralize:"s" }} disponible{{ ligas|length|pluralize:"s" }}</p>
+    </div>
+
+    <section class="liga-section">
+        <h2>Ligas de la temporada</h2>
+
+        <div class="temp-grid">
+            {% for liga in ligas %}
+            <a href="{% url 'detalle_liga' liga.pk %}" class="temp-card">
+                <span class="temp-card-titulo">{{ liga.nombre }}</span>
+                <span class="temp-card-info">
+                    {{ liga.categoria }}{% if liga.grupo %} · Grupo {{ liga.grupo }}{% endif %}
+                </span>
+                <span class="temp-card-extra">{{ liga.equipos.count }} equipos →</span>
             </a>
-        </h3>
+            {% empty %}
+            <p>Esta temporada no tiene ligas.</p>
+            {% endfor %}
+        </div>
+    </section>
 
-        <p>Categoría: {{ liga.categoria }}</p>
+    <p>
+        <a href="{% url 'lista_temporadas' %}" class="boton boton-sec">← Volver a temporadas</a>
+    </p>
 
-    {% empty %}
-        <p>Esta temporada no tiene ligas.</p>
-    {% endfor %}
+    <p>
+        <a href="{% url 'index' %}" class="boton">Volver al inicio</a>
+    </p>
 
-    <p><a href="{% url 'lista_temporadas' %}">Volver a temporadas</a></p>
-    <p><a href="{% url 'index' %}">Volver al inicio</a></p>
+</div>
 
-</body>
 {% endblock %}

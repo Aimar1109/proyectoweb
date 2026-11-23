@@ -1,6 +1,6 @@
 
 {% extends 'fantasy/base.html' %}
-
+{% load static %}
 {% block title %}{{ liga.nombre }} - Fantasy Ligas Vascas{% endblock %}
 
 {% block content %}
@@ -12,7 +12,6 @@
             <h1>{{ liga.nombre }}</h1>
             <p>{{ liga.categoria }} · Grupo {{ liga.grupo }}</p>
         </div>
-        <span class="liga-trofeo">🏆</span>
     </div>
 
     <section class="liga-section">
@@ -37,9 +36,15 @@
 
                         <td class="nombre-equipo">
                             <a href="{% url 'detalle_equipo' fila.equipo.pk %}">
-                                {{ fila.equipo.nombre }}
-                            </a>
-                        </td>
+                            {% if fila.equipo.club %}
+                                <img class="escudo-mini"
+                                src="{% static 'img/escudos/'|add:fila.equipo.club.nombre|add:'.png' %}"
+                                alt=""
+                                onerror="this.style.display='none'">
+                            {% endif %}
+                            {{ fila.equipo.nombre }}
+            </a>
+</td>
 
                         <td class="puntos-equipo">
                             {{ fila.puntos }}
@@ -60,8 +65,8 @@
     </section>
 
     <p>
-        <a href="{% url 'lista_temporadas' %}" class="boton boton-sec">
-            ← Volver a temporadas
+        <a href="{% url 'detalle_temporada' liga.temporada.pk %}" class="boton boton-sec">
+            ← Volver a temporada {{liga.temporada}}
         </a>
     </p>
 

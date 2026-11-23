@@ -833,7 +833,7 @@ a {
 
 
 
-/* AJUSTES DE LA PÁGINA DE LIGA */
+/* PÁGINA DE LIGA */
 
 .liga-container {
     width: calc(100% - 40px);
@@ -931,3 +931,86 @@ a {
     }
 }
 
+.tabla-liga th:nth-child(2) {
+    text-align: left;
+}
+
+.tabla-liga .nombre-equipo a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.escudo-mini {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+/* PÁGINA DE TEMPORADA */
+
+.temp-container {
+    width: calc(100% - 40px);
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.temp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.temp-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 22px;
+    background: white;
+    border: 1px solid #ddd;
+    border-left: 5px solid #195b24;
+    border-radius: 10px;
+    text-decoration: none !important;
+    color: inherit;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.temp-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.temp-card-titulo {
+    font-size: 20px;
+    font-weight: 700;
+    color: #195b24;
+}
+
+.temp-card-info {
+    color: #555;
+}
+
+.temp-card-extra {
+    margin-top: 6px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #195b24;
+}
+
+.temp-container .boton {
+    display: inline-block;
+    padding: 10px 18px;
+    border-radius: 7px;
+    text-decoration: none !important;
+}
+
+@media (max-width: 600px) {
+    .temp-container {
+        width: 100%;
+        padding: 15px;
+        margin: 20px auto;
+    }
+}
