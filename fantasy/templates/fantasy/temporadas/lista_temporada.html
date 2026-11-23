@@ -1,21 +1,36 @@
 {% extends 'fantasy/base.html' %}
 
-{% block title %}Inicio - Fantasy Ligas Vascas{% endblock %}
+{% block title %}Temporadas - Fantasy Ligas Vascas{% endblock %}
 
 {% block content %}
-    <h1>Lista de temporadas</h1>
 
-    {% for temporada in temporadas %}
-        <p>
-            <a href="{% url 'detalle_temporada' temporada.pk %}">
-                {{ temporada }}
+<div class="temp-container">
+
+    <div class="liga-portada">
+        <h1>Temporadas</h1>
+        <p>Elige una temporada para ver sus ligas</p>
+    </div>
+
+    <section class="liga-section">
+        <div class="temp-grid">
+            {% for temporada in temporadas %}
+            <a href="{% url 'detalle_temporada' temporada.pk %}" class="temp-card">
+                <span class="temp-card-titulo">{{ temporada }}</span>
+                <span class="temp-card-info">
+                    {{ temporada.ligas.count }} liga{{ temporada.ligas.count|pluralize:"s" }}
+                </span>
+                <span class="temp-card-extra">Ver ligas →</span>
             </a>
-        </p>
-    {% empty %}
-        <p>No hay temporadas registradas.</p>
-    {% endfor %}
+            {% empty %}
+            <p>No hay temporadas registradas.</p>
+            {% endfor %}
+        </div>
+    </section>
 
-    <p></p><a href="{% url 'index' %}">Volver al inicio</a></p>
+    <p>
+        <a href="{% url 'index' %}" class="boton">Volver al inicio</a>
+    </p>
 
-</body>
+</div>
+
 {% endblock %}
