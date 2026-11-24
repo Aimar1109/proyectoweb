@@ -1,20 +1,160 @@
-{% extends "fantasy/base.html" %} 
+{% extends "fantasy/base.html" %}
+
+{% block title %}Jornada {{ alineacion.jornada.numero }} · {{ alineacion.membresia.usuario.alias }}{% endblock %}
 
 {% block content %}
-<h1>Puntos por jornada de {{ membresia.usuario.alias }}</h1>
-<p>Grupo: {{ membresia.grupo.nombre }} | Total acumulado: <strong>{{ membresia.puntos }} pts</strong></p>
+<div class="container">
+    <section class="section">
+        <div class="card">
+            <h1>Alineación de {{ alineacion.membresia.usuario.alias }}</h1>
 
-<ul>
-    {% for alineacion in alineaciones %}
-        <li>
-            <a href="{% url 'detalle_puntos' membresia.pk alineacion.jornada.pk %}">
-                Jornada {{ alineacion.jornada.numero }} — <strong>{{ alineacion.puntos }} pts</strong>
-            </a>
-        </li>
-    {% empty %}
-        <li>Este usuario aún no tiene jornadas puntuadas.</li>
-    {% endfor %}
-</ul>
+            <nav class="jornadas-nav" aria-label="Navegar entre jornadas">
+                {% if anterior %}
+                    <a href="{% url 'lista_puntos' alineacion.membresia.pk anterior.jornada.pk %}" class="boton boton-sec">
+                        ← Jornada {{ anterior.jornada.numero }}
+                    </a>
+                {% else %}
+                    <span class="boton boton-sec boton-desactivado">← Anterior</span>
+                {% endif %}
 
-<a href="{% url 'clasificacion' membresia.grupo.pk %}">← Volver a la clasificación</a>
+                <div class="jornadas-lista">
+                    {% for a in jornadas %}
+                        <a href="{% url 'lista_puntos' alineacion.membresia.pk a.jornada.pk %}"
+                           class="jornada-item{% if a.pk == alineacion.pk %} activa{% endif %}"
+                           {% if a.pk == alineacion.pk %}aria-current="page"{% endif %}>
+                            <span class="jornada-chip">{{ a.jornada.numero }}</span>
+                            <span class="jornada-pts">{{ a.puntos }} pts</span>
+                        </a>
+                    {% endfor %}
+                </div>
+
+                {% if siguiente %}
+                    <a href="{% url 'lista_puntos' alineacion.membresia.pk siguiente.jornada.pk %}" class="boton boton-sec">
+                        Jornada {{ siguiente.jornada.numero }} →
+                    </a>
+                {% else %}
+                    <span class="boton boton-sec boton-desactivado">Siguiente →</span>
+                {% endif %}
+            </nav>
+
+            <div class="acciones">
+                <a href="{% url 'clasificacion' alineacion.membresia.grupo.pk %}" class="btn-secondary">
+                    ← Volver a la clasificación
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        {% if jugadores_con_puntos %}
+        <div class="al-grid">
+
+            <!-- Campo 4-3-3 (solo lectura) -->
+            <div class="al-card">
+                <div class="al-campo">
+                    <div class="al-lineas" aria-hidden="true">
+                        <div class="al-centro"></div>
+                        <div class="al-area arriba"></div>
+                        <div class="al-area abajo"></div>
+                    </div>
+
+                    <div class="al-filas">
+
+                        <!-- Delanteros -->
+                        <div class="al-fila">
+                            {% for item in jugadores_con_puntos %}{% if item.jugador.posicion == "DEL" %}
+                                <div class="al-hueco lleno solo-ver" title="{{ item.jugador.nombre }}">
+                                    <svg viewBox="0 0 64 56" class="al-camiseta" aria-hidden="true">
+                                        <path d="M20 4 L8 10 L2 24 L14 29 L14 52 L50 52 L50 29 L62 24 L56 10 L44 4 C42 9 37 12 32 12 C27 12 22 9 20 4 Z" stroke-width="2" stroke-linejoin="round"/>
+                                        <text x="32" y="38" text-anchor="middle" font-size="22" font-weight="700">{{ item.jugador.dorsal|default_if_none:"•" }}</text>
+                                    </svg>
+                                    <span class="al-etiqueta">{{ item.jugador.nombre }}</span>
+                                    <span class="al-puntos">{{ item.puntos }} pts</span>
+                                </div>
+                            {% endif %}{% endfor %}
+                        </div>
+
+                        <!-- Centrocampistas -->
+                        <div class="al-fila">
+                            {% for item in jugadores_con_puntos %}{% if item.jugador.posicion == "MED" %}
+                                <div class="al-hueco lleno solo-ver" title="{{ item.jugador.nombre }}">
+                                    <svg viewBox="0 0 64 56" class="al-camiseta" aria-hidden="true">
+                                        <path d="M20 4 L8 10 L2 24 L14 29 L14 52 L50 52 L50 29 L62 24 L56 10 L44 4 C42 9 37 12 32 12 C27 12 22 9 20 4 Z" stroke-width="2" stroke-linejoin="round"/>
+                                        <text x="32" y="38" text-anchor="middle" font-size="22" font-weight="700">{{ item.jugador.dorsal|default_if_none:"•" }}</text>
+                                    </svg>
+                                    <span class="al-etiqueta">{{ item.jugador.nombre }}</span>
+                                    <span class="al-puntos">{{ item.puntos }} pts</span>
+                                </div>
+                            {% endif %}{% endfor %}
+                        </div>
+
+                        <!-- Defensas -->
+                        <div class="al-fila">
+                            {% for item in jugadores_con_puntos %}{% if item.jugador.posicion == "DEF" %}
+                                <div class="al-hueco lleno solo-ver" title="{{ item.jugador.nombre }}">
+                                    <svg viewBox="0 0 64 56" class="al-camiseta" aria-hidden="true">
+                                        <path d="M20 4 L8 10 L2 24 L14 29 L14 52 L50 52 L50 29 L62 24 L56 10 L44 4 C42 9 37 12 32 12 C27 12 22 9 20 4 Z" stroke-width="2" stroke-linejoin="round"/>
+                                        <text x="32" y="38" text-anchor="middle" font-size="22" font-weight="700">{{ item.jugador.dorsal|default_if_none:"•" }}</text>
+                                    </svg>
+                                    <span class="al-etiqueta">{{ item.jugador.nombre }}</span>
+                                    <span class="al-puntos">{{ item.puntos }} pts</span>
+                                </div>
+                            {% endif %}{% endfor %}
+                        </div>
+
+                        <!-- Portero -->
+                        <div class="al-fila">
+                            {% for item in jugadores_con_puntos %}{% if item.jugador.posicion == "POR" %}
+                                <div class="al-hueco lleno solo-ver" title="{{ item.jugador.nombre }}">
+                                    <svg viewBox="0 0 64 56" class="al-camiseta" aria-hidden="true">
+                                        <path d="M20 4 L8 10 L2 24 L14 29 L14 52 L50 52 L50 29 L62 24 L56 10 L44 4 C42 9 37 12 32 12 C27 12 22 9 20 4 Z" stroke-width="2" stroke-linejoin="round"/>
+                                        <text x="32" y="38" text-anchor="middle" font-size="22" font-weight="700">{{ item.jugador.dorsal|default_if_none:"•" }}</text>
+                                    </svg>
+                                    <span class="al-etiqueta">{{ item.jugador.nombre }}</span>
+                                    <span class="al-puntos">{{ item.puntos }} pts</span>
+                                </div>
+                            {% endif %}{% endfor %}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desglose de puntos -->
+            <div class="al-card">
+                <h2>Puntos por jugador</h2>
+                <div class="al-scroll">
+                    <table class="al-tabla">
+                        <thead>
+                            <tr>
+                                <th scope="col">Jugador</th>
+                                <th scope="col">Equipo</th>
+                                <th scope="col">Posición</th>
+                                <th scope="col" class="al-num">Pts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in jugadores_con_puntos %}
+                                <tr>
+                                    <td><strong>{{ item.jugador.nombre }}</strong></td>
+                                    <td>{{ item.jugador.equipo.nombre }}</td>
+                                    <td><span class="al-pos">{{ item.jugador.get_posicion_display }}</span></td>
+                                    <td class="al-num"><strong>{{ item.puntos }}</strong></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="al-pie">
+                    <div>Total de la jornada</div>
+                    <strong>{{ alineacion.puntos }} pts</strong>
+                </div>
+            </div>
+
+        </div>
+        {% else %}
+            <p class="vacio">No había jugadores en esta alineación.</p>
+        {% endif %}
+    </section>
+</div>
 {% endblock %}

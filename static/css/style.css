@@ -1014,3 +1014,68 @@ a {
         margin: 20px auto;
     }
 }
+
+/* NAVEGACIÓN ENTRE JORNADAS */
+
+.jornadas-nav {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 22px 0 8px;
+}
+
+.jornadas-lista {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.jornada-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 52px;
+    text-decoration: none;
+}
+
+.jornada-chip {
+    min-width: 42px;
+    padding: 9px 12px;
+    background: white;
+    border: 2px solid #d9e0d9;
+    border-radius: 5px;
+    color: #195b24;
+    font-weight: bold;
+    text-align: center;
+}
+
+.jornada-item:hover .jornada-chip {
+    background: #e8f0e8;
+    border-color: #195b24;
+}
+
+.jornada-item.activa .jornada-chip {
+    background: #195b24;
+    border-color: #195b24;
+    color: white;
+}
+
+.jornada-pts {
+    font-size: 13px;
+    font-weight: bold;
+    color: #58655b;
+}
+
+.jornada-item.activa .jornada-pts {
+    color: #195b24;
+}
+
+.boton-desactivado {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+}

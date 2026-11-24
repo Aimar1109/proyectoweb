@@ -1,7 +1,7 @@
 from .models import Membresia
 
 # Páginas que pertenecen a un grupo
-URLS_DE_GRUPO = {"clasificacion", "alineacion", "lista_puntos", "detalle_puntos"}
+URLS_DE_GRUPO = {"clasificacion", "alineacion", "lista_puntos"}
 
 
 def grupo_activo(request):

@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.db import models
 from django.db.models.aggregates import Sum
 from django.db.models.functions import Coalesce
+from django.http import Http404
 from django.shortcuts import redirect, render, get_object_or_404
 
 from . import servicios
@@ -270,7 +271,7 @@ def salir_grupo(request, pk):
 
 
 @login_required
-def lista_puntos(request, pk):
+def lista_puntos(request, pk, jornada_pk=None):
     membresia = get_object_or_404(
         Membresia.objects.select_related("usuario", "grupo"),
         pk=pk
@@ -280,28 +281,27 @@ def lista_puntos(request, pk):
 
     request.session["grupo_activo_id"] = membresia.grupo.pk
 
-    alineaciones = (
+    todas = list(
         membresia.alineaciones
-        .select_related("jornada")
+        .select_related("membresia__usuario", "membresia__grupo", "jornada")
         .order_by("jornada__numero")
     )
-    return render(request, "fantasy/grupos/lista_puntos.html", {
-        "membresia": membresia,
-        "alineaciones": alineaciones,
-    })
 
+    if not todas:
+        messages.error(request, "Este usuario aún no tiene jornadas puntuadas.")
+        return redirect("clasificacion", pk=membresia.grupo.pk)
 
-@login_required
-def detalle_puntos(request, pk, jornada_pk):
-    alineacion = get_object_or_404(
-        Alineacion.objects.select_related("membresia__usuario", "membresia__grupo", "jornada"),
-        membresia_id=pk,
-        jornada_id=jornada_pk
-    )
-    if not alineacion.membresia.grupo.membresias.filter(usuario=request.user).exists():
-        return redirect("unirse_grupo")
+    if jornada_pk is None:
+        con_puntos = [a for a in todas if a.puntos > 0]
+        alineacion = (con_puntos or todas)[-1]
+    else:
+        alineacion = next((a for a in todas if a.jornada_id == jornada_pk), None)
+        if alineacion is None:
+            raise Http404("Esa jornada no tiene alineación.")
 
-    request.session["grupo_activo_id"] = alineacion.membresia.grupo_id
+    indice = todas.index(alineacion)
+    anterior = todas[indice - 1] if indice > 0 else None
+    siguiente = todas[indice + 1] if indice < len(todas) - 1 else None
 
     stats = EstadisticaPartido.objects.filter(
         jugador__in=alineacion.jugadores.all(),
@@ -319,7 +319,10 @@ def detalle_puntos(request, pk, jornada_pk):
         for jugador in alineacion.jugadores.select_related("equipo").all()
     ]
 
-    return render(request, "fantasy/grupos/detalle_puntos.html", {
+    return render(request, "fantasy/grupos/lista_puntos.html", {
         "alineacion": alineacion,
         "jugadores_con_puntos": jugadores_con_puntos,
+        "jornadas": todas,
+        "anterior": anterior,
+        "siguiente": siguiente,
     })
