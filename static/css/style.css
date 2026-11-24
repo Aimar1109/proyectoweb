@@ -1079,3 +1079,176 @@ a {
     cursor: not-allowed;
     pointer-events: none;
 }
+
+/* CLASIFICACIÓN DEL GRUPO */
+
+.clasif-portada {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.clasif-portada p {
+    margin: 0;
+}
+
+.clasif-portada .btn-registro {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.clasif-invitar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.clasif-caja {
+    background: white;
+    border: 1px solid #d9e0d9;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.tabla-liga .col-puesto {
+    width: 90px;
+    text-align: center;
+}
+
+.puesto-badge {
+    display: inline-block;
+    min-width: 32px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    font-weight: bold;
+    color: #58655b;
+}
+
+.puesto-badge.top {
+    background: #e8f0e8;
+    color: #195b24;
+}
+
+.tabla-liga tr.yo td {
+    background: #e8f0e8;
+    font-weight: bold;
+}
+
+/* PODIO */
+
+.podio {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.podio-puesto {
+    flex: 1;
+    max-width: 260px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 20px 12px;
+    background: white;
+    border: 1px solid #d9e0d9;
+    border-radius: 10px;
+    color: #263128;
+    text-align: center;
+    text-decoration: none;
+}
+
+.podio-puesto:hover {
+    border-color: #195b24;
+}
+
+.podio-primero {
+    order: 2;
+    min-height: 210px;
+    background: #195b24;
+    border-color: #195b24;
+    color: white;
+}
+
+.podio-segundo {
+    order: 1;
+    min-height: 170px;
+}
+
+.podio-tercero {
+    order: 3;
+    min-height: 140px;
+}
+
+.podio-pos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #e8f0e8;
+    color: #195b24;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.podio-primero .podio-pos {
+    background: white;
+}
+
+.podio-nombre {
+    font-size: 18px;
+    font-weight: bold;
+    word-break: break-word;
+}
+
+.podio-pts {
+    font-size: 28px;
+    font-weight: bold;
+    color: #195b24;
+}
+
+.podio-pts small {
+    display: block;
+    font-size: 12px;
+    font-weight: normal;
+    color: #58655b;
+}
+
+.podio-primero .podio-pts {
+    color: white;
+}
+
+.podio-primero .podio-pts small {
+    color: #dff0df;
+}
+
+.podio-puesto.es-yo:not(.podio-primero) {
+    background: #e8f0e8;
+    border: 2px solid #195b24;
+}
+
+@media (max-width: 600px) {
+    .podio {
+        gap: 8px;
+    }
+
+    .podio-puesto {
+        padding: 14px 6px;
+    }
+
+    .podio-nombre {
+        font-size: 15px;
+    }
+
+    .podio-pts {
+        font-size: 22px;
+    }
+}

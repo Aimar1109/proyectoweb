@@ -1,48 +1,92 @@
 {% extends "fantasy/base.html" %}
 
-{% block titulo %}{{ grupo.nombre }} · Fantasy Ligas Vascas{% endblock %}
+{% block title %}{{ grupo.nombre }} · Fantasy Ligas Vascas{% endblock %}
 
 {% block content %}
-    <p><a href="{% url 'mis_grupos' %}">Volver a mis grupos</a></p>
+<div class="container">
 
-    <h1>{{ grupo.nombre }}</h1>
-    <p class="meta">
-        {{ grupo.liga.nombre }}. {{ grupo.membresias.count }} de {{ grupo.MAX_MIEMBROS }} miembros.
-    </p>
+    <section class="section">
+        <div class="liga-portada clasif-portada">
+            <div>
+                <h1>{{ grupo.nombre }}</h1>
+                <p>{{ grupo.liga.nombre }} · {{ grupo.membresias.count }} de {{ grupo.MAX_MIEMBROS }} miembros</p>
+            </div>
 
-    <p>
-        Para invitar a alguien, pásale este código:
-        <strong class="codigo">{{ grupo.codigo }}</strong>
-    </p>
+            <a href="{% url 'mis_grupos' %}" class="btn-registro">
+                ← Volver a mis grupos
+            </a>
+        </div>
 
-    <h2>Clasificación</h2>
-    {% if ranking %}
-        <table class="tabla-ranking">
-            <thead>
-                <tr>
-                    <th scope="col">Puesto</th>
-                    <th scope="col">Jugador</th>
-                    <th scope="col">Puntos</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for p in ranking %}
-                    <tr {% if p.usuario == request.user %}class="yo"{% endif %}>
-                        <td>{{ forloop.counter }}</td>
-                        <td><a href="{% url 'lista_puntos' p.pk %}">{{ p.usuario.alias }}</a></td>
-                        <td>{{ p.puntos }}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    {% else %}
-        <p class="vacio">Aún no hay puntos. La clasificación aparecerá cuando se calcule la primera jornada.</p>
-    {% endif %}
+        <div class="card clasif-invitar">
+            <p>Para invitar a alguien, pásale este código:</p>
+            <strong class="codigo">{{ grupo.codigo }}</strong>
+        </div>
+    </section>
 
-    {% if grupo.creador != request.user %}
-        <form method="post" action="{% url 'salir_grupo' grupo.pk %}" class="salir">
-            {% csrf_token %}
-            <button type="submit" class="boton boton-sec">Salir del grupo</button>
-        </form>
-    {% endif %}
+    <section class="section">
+        <h2>Clasificación</h2>
+
+        {% if ranking|length >= 3 and ranking.0.puntos > 0 %}
+            <div class="podio">
+                <a href="{% url 'lista_puntos' ranking.0.pk %}"
+                   class="podio-puesto podio-primero{% if ranking.0.usuario == request.user %} es-yo{% endif %}">
+                    <span class="podio-pos">1</span>
+                    <span class="podio-nombre">{{ ranking.0.usuario.alias }}</span>
+                    <span class="podio-pts">{{ ranking.0.puntos }}<small>puntos</small></span>
+                </a>
+
+                <a href="{% url 'lista_puntos' ranking.1.pk %}"
+                   class="podio-puesto podio-segundo{% if ranking.1.usuario == request.user %} es-yo{% endif %}">
+                    <span class="podio-pos">2</span>
+                    <span class="podio-nombre">{{ ranking.1.usuario.alias }}</span>
+                    <span class="podio-pts">{{ ranking.1.puntos }}<small>puntos</small></span>
+                </a>
+
+                <a href="{% url 'lista_puntos' ranking.2.pk %}"
+                   class="podio-puesto podio-tercero{% if ranking.2.usuario == request.user %} es-yo{% endif %}">
+                    <span class="podio-pos">3</span>
+                    <span class="podio-nombre">{{ ranking.2.usuario.alias }}</span>
+                    <span class="podio-pts">{{ ranking.2.puntos }}<small>puntos</small></span>
+                </a>
+            </div>
+        {% endif %}
+
+        {% if ranking %}
+            <div class="clasif-caja">
+                <table class="tabla-liga">
+                    <thead>
+                        <tr>
+                            <th scope="col">Puesto</th>
+                            <th scope="col">Jugador</th>
+                            <th scope="col">Puntos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in ranking %}
+                            <tr {% if p.usuario == request.user %}class="yo"{% endif %}>
+                                <td class="col-puesto">
+                                    <span class="puesto-badge{% if forloop.counter <= 3 %} top{% endif %}">{{ forloop.counter }}</span>
+                                </td>
+                                <td class="nombre-equipo">
+                                    <a href="{% url 'lista_puntos' p.pk %}">{{ p.usuario.alias }}</a>
+                                </td>
+                                <td class="puntos-equipo">{{ p.puntos }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="vacio">Aún no hay miembros en este grupo.</p>
+        {% endif %}
+
+        {% if grupo.creador != request.user %}
+            <form method="post" action="{% url 'salir_grupo' grupo.pk %}" class="salir">
+                {% csrf_token %}
+                <button type="submit" class="boton boton-sec">Salir del grupo</button>
+            </form>
+        {% endif %}
+    </section>
+
+</div>
 {% endblock %}
