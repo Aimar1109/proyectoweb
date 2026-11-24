@@ -3,6 +3,10 @@
     box-sizing: border-box;
 }
 
+main {
+    padding: 30px 20px;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -1264,4 +1268,81 @@ a {
     height: 80px;
     width: auto;
     display: block;
+}
+
+.club-card {
+    margin-top: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.club-card ~ .section,
+.club-card ~ .acciones {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+/* PÁGINA DE EQUIPO */
+
+.equipo-container {
+    width: calc(100% - 40px);
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.equipo-descripcion {
+    margin-top: 18px !important;
+    padding-top: 18px;
+    border-top: 1px solid #e5e9e5;
+}
+
+.tabla-jugadores {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabla-jugadores th {
+    padding: 14px 16px;
+    background: #195b24;
+    color: white;
+    text-align: left;
+}
+
+.tabla-jugadores td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e5e9e5;
+}
+
+.tabla-jugadores tbody tr:hover {
+    background: #f1f7f1;
+}
+
+.tabla-jugadores .col-dorsal {
+    width: 90px;
+    text-align: center;
+}
+
+.tabla-jugadores .jugador-nombre {
+    font-weight: bold;
+    color: #173c22;
+}
+
+.dorsal-badge {
+    display: inline-block;
+    min-width: 34px;
+    padding: 4px 8px;
+    background: #e8f0e8;
+    color: #195b24;
+    border-radius: 999px;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    .equipo-container {
+        width: 100%;
+        padding: 15px;
+        margin: 20px auto;
+    }
 }

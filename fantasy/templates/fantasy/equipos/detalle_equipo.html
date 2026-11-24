@@ -1,32 +1,68 @@
 {% extends 'fantasy/base.html' %}
+{% load static %}
 
-{% block title %}Inicio - Fantasy Ligas Vascas{% endblock %}
+{% block title %}{{ equipo.nombre }} - Fantasy Ligas Vascas{% endblock %}
 
 {% block content %}
 
-    <h1>{{ equipo.nombre }}</h1>
+<div class="equipo-container">
 
-    <p>Ciudad: {{ equipo.ciudad }}</p>
-    <p>Año de fundación: {{ equipo.anno_fundacion }}</p>
-    <p>Descripción: {{ equipo.descripcion }}</p>
+    <div class="card club-card">
+        <div class="club-header">
+            {% static 'img/escudos/NO.png' as escudo_no %}
+            <img src="{% static 'img/escudos/'|add:equipo.club.escudo %}"
+                 alt="Escudo de {{ equipo.club.nombre }}"
+                 class="club-escudo"
+                 onerror="this.onerror=null; this.src='{{ escudo_no }}'">
+            <div>
+                <h1>{{ equipo.nombre }}</h1>
+                <p class="meta"><strong>Ciudad:</strong> {{ equipo.ciudad }}</p>
+                <p class="meta"><strong>Año de fundación:</strong> {{ equipo.anno_fundacion }}</p>
+            </div>
+        </div>
+        {% if equipo.descripcion %}
+            <p class="equipo-descripcion">{{ equipo.descripcion }}</p>
+        {% endif %}
+    </div>
 
-    <h2>Jugadores</h2>
+    <div class="section">
+        <h2>Jugadores</h2>
 
-    {% for jugador in jugadores %}
-        <p>
-            {{ jugador.nombre }} -
-            {{ jugador.posicion }}
+        {% if jugadores %}
+        <div class="clasif-caja">
+            <table class="tabla-jugadores">
+                <thead>
+                    <tr>
+                        <th class="col-dorsal">Dorsal</th>
+                        <th>Nombre</th>
+                        <th>Posición</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for jugador in jugadores %}
+                    <tr>
+                        <td class="col-dorsal">
+                            {% if jugador.dorsal %}
+                                <span class="dorsal-badge">{{ jugador.dorsal }}</span>
+                            {% else %}-{% endif %}
+                        </td>
+                        <td class="jugador-nombre">{{ jugador.nombre }}</td>
+                        <td><span class="al-pos">{{ jugador.posicion }}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="vacio">Este equipo no tiene jugadores.</div>
+        {% endif %}
+    </div>
 
-            {% if jugador.dorsal %}
-                - Dorsal: {{ jugador.dorsal }}
-            {% endif %}
-        </p>
-    {% empty %}
-        <p>Este equipo no tiene jugadores.</p>
-    {% endfor %}
+    <div class="acciones">
+        <a href="{% url 'detalle_club' equipo.club.pk %}" class="boton boton-sec">Volver a {{ equipo.club.nombre }}</a>
+        <a href="{% url 'index' %}" class="boton boton-sec">Volver al inicio</a>
+    </div>
 
-    <p><a href="{% url 'detalle_club' equipo.club.pk %}">Volver a {{equipo.club.nombre}}</a></p>
-    <p><a href="{% url 'index' %}">Volver al inicio</a></p>
+</div>
 
-</body>
 {% endblock %}
