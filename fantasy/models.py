@@ -55,6 +55,10 @@ class Club(models.Model):
     def __str__(self):
         return self.nombre
 
+    @property
+    def escudo(self):
+        return self.nombre.rstrip('.') + '.png'
+
 
 class Equipo(models.Model):
     nombre = models.CharField(max_length=100) # He borrado el unique true, porque un nuestra base de datos Athletic 2022/2023 es distinto de Athletic 2023/2024

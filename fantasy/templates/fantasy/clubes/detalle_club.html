@@ -5,42 +5,41 @@
 
 {% block content %}
 
-    <div class="card club-card">
-        <div class="club-header">
-            {% with 'img/escudos/'|add:club.nombre|add:'.png' as ruta_escudo %}
-                <img src="{% static ruta_escudo %}" 
-                     alt="Escudo de {{ club.nombre }}" 
-                     class="club-escudo"
-                     >
-            {% endwith %}
-            
-            <div>
-                <h1>{{ club.nombre }}</h1>
-                <p class="meta"><strong>Email:</strong> {{ club.email }}</p>
-                <p class="meta"><strong>Dirección:</strong> {{ club.direccion }}</p>
-            </div>
+<div class="card club-card">
+    <div class="club-header">
+        {% with 'img/escudos/'|add:club.escudo as ruta_escudo %}
+        {% static 'img/escudos/NO.png' as escudo_no %}
+        <img src="{% static 'img/escudos/'|add:club.escudo %}" alt="Escudo de {{ club.nombre }}" class="club-escudo"
+            onerror="this.onerror=null; this.src='{{ escudo_no }}'">
+        {% endwith %}
+
+        <div>
+            <h1>{{ club.nombre }}</h1>
+            <p class="meta"><strong>Email:</strong> {{ club.email }}</p>
+            <p class="meta"><strong>Dirección:</strong> {{ club.direccion }}</p>
         </div>
     </div>
+</div>
 
-    <div class="section">
-        <h2>Equipos del club</h2>
+<div class="section">
+    <h2>Equipos del club</h2>
 
-        <div class="lista-grupos">
-            {% for equipo in equipos %}
-                <a href="{% url 'detalle_equipo' equipo.pk %}" class="grupo">
-                    <strong>{{ equipo.nombre }}</strong>
-                </a>
-            {% empty %}
-                <div class="vacio">
-                    Este club no tiene equipos registrados.
-                </div>
-            {% endfor %}
+    <div class="lista-grupos">
+        {% for equipo in equipos %}
+        <a href="{% url 'detalle_equipo' equipo.pk %}" class="grupo">
+            <strong>{{ equipo.nombre }}</strong>
+        </a>
+        {% empty %}
+        <div class="vacio">
+            Este club no tiene equipos registrados.
         </div>
+        {% endfor %}
     </div>
+</div>
 
-    <div class="acciones">
-        <a href="{% url 'lista_clubes' %}" class="boton boton-sec">Volver a clubes</a>
-        <a href="{% url 'index' %}" class="boton boton-sec">Volver al inicio</a>
-    </div>
+<div class="acciones">
+    <a href="{% url 'lista_clubes' %}" class="boton boton-sec">Volver a clubes</a>
+    <a href="{% url 'index' %}" class="boton boton-sec">Volver al inicio</a>
+</div>
 
 {% endblock %}

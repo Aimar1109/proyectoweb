@@ -1,4 +1,3 @@
-
 {% extends 'fantasy/base.html' %}
 {% load static %}
 {% block title %}{{ liga.nombre }} - Fantasy Ligas Vascas{% endblock %}
@@ -35,16 +34,17 @@
                         <td>{{ forloop.counter }}</td>
 
                         <td class="nombre-equipo">
+                            {% static 'img/escudos/NO.png' as escudo_no %}
                             <a href="{% url 'detalle_equipo' fila.equipo.pk %}">
-                            {% if fila.equipo.club %}
-                                <img class="escudo-mini"
-                                src="{% static 'img/escudos/'|add:fila.equipo.club.nombre|add:'.png' %}"
-                                alt=""
-                                onerror="this.style.display='none'">
-                            {% endif %}
-                            {{ fila.equipo.nombre }}
-            </a>
-</td>
+                                {% if fila.equipo.club %}
+                                <img class="escudo-mini" src="{% static 'img/escudos/'|add:fila.equipo.club.escudo %}"
+                                    alt="" onerror="this.onerror=null; this.src='{{ escudo_no }}'">
+                                {% else %}
+                                <img class="escudo-mini" src="{{ escudo_no }}" alt="">
+                                {% endif %}
+                                {{ fila.equipo.nombre }}
+                            </a>
+                        </td>
 
                         <td class="puntos-equipo">
                             {{ fila.puntos }}
