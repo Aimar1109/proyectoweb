@@ -3,20 +3,32 @@
 {% block title %}Temporada {{ temporada }} - Fantasy Ligas Vascas{% endblock %}
 
 {% block content %}
+<div class="temp-container" id="detalle-temporada">
 
-<div class="temp-container">
+    <div class="liga-portada temp-cabecera-con-filtro">
+        <div class="temp-cabecera-texto">
+            <h1>Temporada {{ temporada }}</h1>
+            <p id="contador-ligas" aria-live="polite">
+                {{ ligas|length }} liga{{ ligas|length|pluralize:"s" }} disponible{{ ligas|length|pluralize:"s" }}
+            </p>
+        </div>
 
-    <div class="liga-portada">
-        <h1>Temporada {{ temporada }}</h1>
-        <p>{{ ligas|length }} liga{{ ligas|length|pluralize:"s" }} disponible{{ ligas|length|pluralize:"s" }}</p>
+        <div class="temp-filtro">
+            <label for="filtro-categoria">Categoría</label>
+            <select id="filtro-categoria">
+                <option value="">Todas las categorías</option>
+            </select>
+        </div>
     </div>
 
     <section class="liga-section">
         <h2>Ligas de la temporada</h2>
 
-        <div class="temp-grid">
+        <div class="temp-grid" id="grid-ligas">
             {% for liga in ligas %}
-            <a href="{% url 'detalle_liga' liga.pk %}" class="temp-card">
+            <a href="{% url 'detalle_liga' liga.pk %}"
+               class="temp-card"
+               data-categoria="{{ liga.categoria }}">
                 <span class="temp-card-titulo">{{ liga.nombre }}</span>
                 <span class="temp-card-info">
                     {{ liga.categoria }}{% if liga.grupo %} · Grupo {{ liga.grupo }}{% endif %}
@@ -27,6 +39,12 @@
             <p>Esta temporada no tiene ligas.</p>
             {% endfor %}
         </div>
+
+        {% if ligas %}
+        <p id="sin-resultados" class="temp-sin-resultados" hidden>
+            No hay ligas de esta categoría en la temporada.
+        </p>
+        {% endif %}
     </section>
 
     <p>
@@ -38,5 +56,46 @@
     </p>
 
 </div>
+
+<script>
+(function () {
+    const contenedor = document.getElementById('detalle-temporada');
+    const select = contenedor.querySelector('#filtro-categoria');
+    const tarjetas = Array.from(contenedor.querySelectorAll('.temp-card[data-categoria]'));
+    const contador = contenedor.querySelector('#contador-ligas');
+    const sinResultados = contenedor.querySelector('#sin-resultados');
+
+    // Se obtienen las categorías reales de Django, sin escribirlas a mano.
+    const categorias = [...new Set(
+        tarjetas.map(tarjeta => tarjeta.dataset.categoria.trim()).filter(Boolean)
+    )].sort((a, b) => a.localeCompare(b, 'es'));
+
+    categorias.forEach(categoria => {
+        const opcion = document.createElement('option');
+        opcion.value = categoria;
+        opcion.textContent = categoria;
+        select.appendChild(opcion);
+    });
+
+    function filtrarLigas() {
+        const categoriaElegida = select.value;
+        let visibles = 0;
+
+        tarjetas.forEach(tarjeta => {
+            const mostrar = !categoriaElegida || tarjeta.dataset.categoria.trim() === categoriaElegida;
+            tarjeta.hidden = !mostrar;
+            // Evita que una regla CSS de .temp-card anule el atributo hidden.
+            tarjeta.style.display = mostrar ? '' : 'none';
+            if (mostrar) visibles++;
+        });
+
+        contador.textContent = `${visibles} ${visibles === 1 ? 'liga disponible' : 'ligas disponibles'}`;
+        if (sinResultados) sinResultados.hidden = visibles !== 0;
+    }
+
+    select.addEventListener('change', filtrarLigas);
+    filtrarLigas();
+})();
+</script>
 
 {% endblock %}
