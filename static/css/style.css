@@ -28,6 +28,13 @@ a {
     font-weight: bold;
 }
 
+.navbar a {
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    font-size: 20px;
+}
+
 .navbar-links,
 .navbar-auth {
     display: flex;
@@ -1251,4 +1258,10 @@ a {
     .podio-pts {
         font-size: 22px;
     }
+}
+
+.navbar-logo {
+    height: 80px;
+    width: auto;
+    display: block;
 }

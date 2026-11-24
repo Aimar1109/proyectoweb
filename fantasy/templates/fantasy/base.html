@@ -6,13 +6,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Fantasy Ligas Vascas{% endblock %}</title>
+    <link rel="icon" type = "image/png" href="{% static 'img/icon.png' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <header class="navbar">
         <div class="navbar-brand">
-            <a href="{% url 'index' %}">Fantasy Ligas Vascas</a>
-        </div>
+            <a href="{% url 'index' %}">
+                <img src="{% static 'img/logo.png' %}" alt="Fantasy Ligas Vascas" class="navbar-logo">
+            </a>
+</div>
 
         <nav class="navbar-links">
             <a href="{% url 'lista_clubes' %}">Clubes</a>
