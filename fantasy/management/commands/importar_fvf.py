@@ -162,6 +162,12 @@ class Command(BaseCommand):
 
     # ----------------------------------------------------------------------
     def importar(self, comp, jor, par, info, o):
+
+        comp = [
+            r for r in comp
+            if "INFANTIL" not in r["Categoría"].upper()
+            and "INFANTIL" not in r["Competición"].upper()
+        ]
         # ---- Qué grupos entran
         con_calendario = {r["cod_grupo"] for r in jor} | {r["cod_grupo"] for r in par}
         if o["solo_con_calendario"]:

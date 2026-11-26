@@ -1,0 +1,61 @@
+Email repetido (direcciondeportivamungia@gmail.com) en FRUIZ K.T. -> sin-email-fruiz-kt@fvf.invalid
+Email repetido (direcciondeportivamungia@gmail.com) en ASTRIKOITZ MUNGIA C.F.S.T. -> sin-email-astrikoitz-mungia-cfst@fvf.invalid
+Email repetido (club@udlamerced.com) en ARTXANDAKO MERTXETARRAK K.T. -> sin-email-artxandako-mertxetarrak-kt@fvf.invalid
+Email repetido (afkarrontegifk@gmail.com) en BARAKALDOKO K.T. BETI LAGUNAK F. -> sin-email-barakaldoko-kt-beti-lagunak-f@fvf.invalid
+Email repetido (sdplentzia@gmail.com) en GAMINIZ DE PLENTZIA C.F. -> sin-email-gaminiz-de-plentzia-cf@fvf.invalid
+Email repetido (berangoft@gmail.com) en ITURRIAGAKO F.K. -> sin-email-iturriagako-fk@fvf.invalid
+Email repetido (begona1924@gmail.com) en MATZHERRI F.K. -> sin-email-matzherri-fk@fvf.invalid
+Email repetido (gernikaclub@gmail.com) en URBIETAKO F.K. -> sin-email-urbietako-fk@fvf.invalid
+Email repetido (gorka@msceh.com) en MSC BUTROE K.K. -> sin-email-msc-butroe-kk@fvf.invalid
+Email repetido (montefuerte@hotmail.es) en MENDIGOGOR C.D. -> sin-email-mendigogor-cd@fvf.invalid
+Club sin email: IKAS TXIKI K.E.A.D. -> sin-email-ikas-txiki-kead@fvf.invalid
+Email repetido (ortuellakojendea@gmail.com) en ORTUELLAKO JENDEA 1999 K.K. -> sin-email-ortuellako-jendea-1999-kk@fvf.invalid
+Email repetido (betolatzaclubfutbol@gmail.com) en ALUZETAKO C.F. -> sin-email-aluzetako-cf@fvf.invalid
+Email repetido (iurretakokiroltaldea@gmail.com) en URREKOLARRAKO F.K. -> sin-email-urrekolarrako-fk@fvf.invalid
+Club sin email: ABAROA U.D. -> sin-email-abaroa-ud@fvf.invalid
+Club sin ficha en clubes_info.csv: ABAROA U.D.
+Club sin email: BAKUVA A.D.A. -> sin-email-bakuva-ada@fvf.invalid
+Club sin ficha en clubes_info.csv: BAKUVA A.D.A.
+Club sin email: BASAURIKO KIMUAK F.K. -> sin-email-basauriko-kimuak-fk@fvf.invalid
+Club sin ficha en clubes_info.csv: BASAURIKO KIMUAK F.K.
+Club sin email: BERRIO-OTXOA A.D. -> sin-email-berrio-otxoa-ad@fvf.invalid
+Club sin ficha en clubes_info.csv: BERRIO-OTXOA A.D.
+Club sin email: BILBAO ARTIZARRAK F.K. -> sin-email-bilbao-artizarrak-fk@fvf.invalid
+Club sin ficha en clubes_info.csv: BILBAO ARTIZARRAK F.K.
+Club sin email: BIZKENESKAK F.T. -> sin-email-bizkeneskak-ft@fvf.invalid
+Club sin ficha en clubes_info.csv: BIZKENESKAK F.T.
+Club sin email: ENKARTERRI NESKAK F.K.E. -> sin-email-enkarterri-neskak-fke@fvf.invalid
+Club sin ficha en clubes_info.csv: ENKARTERRI NESKAK F.K.E.
+Club sin email: ERANDIOKO BETIKO NESKAK F.K.E. -> sin-email-erandioko-betiko-neskak-fke@fvf.invalid
+Club sin ficha en clubes_info.csv: ERANDIOKO BETIKO NESKAK F.K.E.
+Club sin email: ESTUCA F.K. -> sin-email-estuca-fk@fvf.invalid
+Club sin ficha en clubes_info.csv: ESTUCA F.K.
+Club sin email: GERTASPORT K.K. -> sin-email-gertasport-kk@fvf.invalid
+Club sin ficha en clubes_info.csv: GERTASPORT K.K.
+Club sin email: KABIEZESEKO ZURIGORRIAK F.K. -> sin-email-kabiezeseko-zurigorriak-fk@fvf.invalid
+Club sin ficha en clubes_info.csv: KABIEZESEKO ZURIGORRIAK F.K.
+Club sin email: LEIOAKO EMAKUMEAK SARRIENA FKE -> sin-email-leioako-emakumeak-sarriena-fke@fvf.invalid
+Club sin ficha en clubes_info.csv: LEIOAKO EMAKUMEAK SARRIENA FKE
+Club sin email: MIRIBILLA URRE F.K. -> sin-email-miribilla-urre-fk@fvf.invalid
+Club sin ficha en clubes_info.csv: MIRIBILLA URRE F.K.
+Club sin email: SOPELA ATXABIRIBIL F.K. -> sin-email-sopela-atxabiribil-fk@fvf.invalid
+Club sin ficha en clubes_info.csv: SOPELA ATXABIRIBIL F.K.
+Club sin email: URABERRI F.K. -> sin-email-uraberri-fk@fvf.invalid
+Club sin ficha en clubes_info.csv: URABERRI F.K.
+Club sin email: URDAIBAI C.F -> sin-email-urdaibai-cf@fvf.invalid
+Club sin ficha en clubes_info.csv: URDAIBAI C.F
+Club sin email: USANSOLO TAKA K.K. -> sin-email-usansolo-taka-kk@fvf.invalid
+Club sin ficha en clubes_info.csv: USANSOLO TAKA K.K.
+Equipo creado desde partidos (no estaba en competiciones): Atsedena en Segunda Regional Femenina - Grupo 2 -> club sin asignar
+Equipo creado desde partidos (no estaba en competiciones): ABADIÑO en Regional Preferente - Grupo 1 -> club ABADIÑO K.E.
+Equipo creado desde partidos (no estaba en competiciones): APURTUARTE en Regional Preferente - Grupo 1 -> club APURTUARTE C.
+Equipo creado desde partidos (no estaba en competiciones): Atsedena en Tercera División Regional - Grupo 3 -> club sin asignar
+Equipo creado desde partidos (no estaba en competiciones): Atsedena en Segunda División Juvenil - Grupo 4 -> club sin asignar
+Equipo creado desde partidos (no estaba en competiciones): Atsedena en Segunda División Cadete - Grupo 2 -> club sin asignar
+Equipo creado desde partidos (no estaba en competiciones): Atsedena en Segunda División Cadete - Grupo 3 -> club sin asignar
+Equipo creado desde partidos (no estaba en competiciones): Atsedena en Segunda División Cadete - Grupo 4 -> club sin asignar
+Equipo creado desde partidos (no estaba en competiciones): Atsedena en Tercera División Juvenil - Grupo 1 -> club sin asignar
+Equipo creado desde partidos (no estaba en competiciones): Atsedena en Tercera División Juvenil - Grupo 2 -> club sin asignar
+Equipo creado desde partidos (no estaba en competiciones): Atsedena en Tercera División Juvenil - Grupo 3 -> club sin asignar
+Equipo creado desde partidos (no estaba en competiciones): Atsedena en Tercera División Juvenil - Grupo 4 -> club sin asignar
+Equipo creado desde partidos (no estaba en competiciones): Atsedena en Tercera División Cadete - Grupo 4 -> club sin asignar
