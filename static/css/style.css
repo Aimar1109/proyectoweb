@@ -50,12 +50,6 @@ a {
     margin-left: auto;
 }
 
-.navbar a {
-    color: white;
-    font-weight: bold;
-    text-decoration: none;
-}
-
 .navbar a:hover {
     text-decoration: underline;
 }
@@ -242,7 +236,6 @@ a {
     }
 }
 
-
 /* LOGIN */
 
 .login-container {
@@ -304,10 +297,6 @@ a {
 
 .login-card button:hover {
     background: #123f1a;
-}
-
-.login-card .login-error {
-    color: #b91c1c;
 }
 
 /* LOGOUT */
@@ -542,7 +531,7 @@ a {
 /* CLUBES */
 
 .club-card {
-    margin-bottom: 35px;
+    margin: 30px 20px 35px;
 }
 
 .club-header {
@@ -842,8 +831,6 @@ a {
     text-decoration: underline;
 }
 
-
-
 /* PÁGINA DE LIGA */
 
 .liga-container {
@@ -903,7 +890,9 @@ a {
     color: #195b24 !important;
     text-decoration: none !important;
     font-weight: 700;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
 }
 
 .tabla-liga .nombre-equipo a:hover {
@@ -944,12 +933,6 @@ a {
 
 .tabla-liga th:nth-child(2) {
     text-align: left;
-}
-
-.tabla-liga .nombre-equipo a {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
 }
 
 .escudo-mini {
@@ -1270,12 +1253,6 @@ a {
     display: block;
 }
 
-.club-card {
-    margin-top: 30px;
-    margin-left: 20px;
-    margin-right: 20px;
-}
-
 .club-card ~ .section,
 .club-card ~ .acciones {
     margin-left: 20px;
@@ -1349,72 +1326,73 @@ a {
 
 /* DETALLE TEMPORADAS */
 /* Estilos limitados a esta página */
-    .temp-cabecera-con-filtro {
-        display: flex;
-        flex-wrap: wrap;
-        align-items: end;
-        justify-content: space-between;
-        gap: 20px;
-    }
+.temp-cabecera-con-filtro {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 20px;
+}
 
-    .temp-cabecera-texto h1 {
-        margin-bottom: 8px;
-    }
+.temp-cabecera-texto h1 {
+    margin-bottom: 8px;
+}
 
-    .temp-cabecera-texto p {
-        margin: 0;
-    }
+.temp-cabecera-texto p {
+    margin: 0;
+}
 
+.temp-filtro {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 220px;
+    max-width: 280px;
+    flex: 1 1 220px;
+}
+
+.temp-filtro label {
+    font-weight: 600;
+    color: white;
+    font-size: 0.95rem;
+}
+
+.temp-filtro select {
+    width: 100%;
+    background: white;
+    color: #183b24;
+    border: 1px solid #d7e3d9;
+    border-radius: 8px;
+    padding: 11px 14px;
+    font: inherit;
+    cursor: pointer;
+}
+
+.temp-filtro select:focus-visible {
+    outline: 3px solid #acd7b3;
+    outline-offset: 2px;
+}
+
+.temp-sin-resultados {
+    padding: 24px;
+    color: #555;
+}
+
+@media (max-width: 600px) {
     .temp-filtro {
-        display: flex;
-        flex-direction: column;
-        gap: 7px;
-        min-width: 220px;
-        max-width: 280px;
-        flex: 1 1 220px;
+        max-width: none;
     }
-
-    .temp-filtro label {
-        font-weight: 600;
-        color: white;
-        font-size: 0.95rem;
-    }
-
-    .temp-filtro select {
-        width: 100%;
-        background: white;
-        color: #183b24;
-        border: 1px solid #d7e3d9;
-        border-radius: 8px;
-        padding: 11px 14px;
-        font: inherit;
-        cursor: pointer;
-    }
-
-    .temp-filtro select:focus-visible {
-        outline: 3px solid #acd7b3;
-        outline-offset: 2px;
-    }
-
-    .temp-sin-resultados {
-        padding: 24px;
-        color: #555;
-    }
-
-    @media (max-width: 600px) {
-        .temp-filtro {
-            max-width: none;
-        }
-    }
+}
 
 /* JORNADAS LIGA */
 
-#selector-jornada {
+.jornadas-selector #selector-jornada {
     padding: 10px 15px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    margin-bottom: 25px;
     font-size: 16px;
+    margin: 0 !important;
+    align-self: center;
 }
 
 .bloque-jornada[hidden] {
@@ -1486,12 +1464,6 @@ a {
     margin: 25px 0;
 }
 
-.jornadas-barra .liga-navegacion {
-    display: flex;
-    gap: 12px;
-    margin: 0;
-}
-
 .jornadas-selector {
     display: flex;
     align-items: center;
@@ -1499,28 +1471,23 @@ a {
 }
 
 .jornadas-selector label {
+    margin: 0;
     white-space: nowrap;
 }
 
-.jornadas-selector select {
-    padding: 10px 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
+.jornadas-barra .liga-navegacion {
+    align-items: center;
     margin: 0;
 }
 
-/* Adaptación para móviles */
 @media (max-width: 700px) {
     .jornadas-barra {
         flex-direction: column;
         align-items: stretch;
     }
-
     .jornadas-barra .liga-navegacion {
         flex-wrap: wrap;
     }
-
     .jornadas-selector {
         justify-content: flex-end;
     }

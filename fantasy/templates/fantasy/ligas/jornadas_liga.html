@@ -4,58 +4,7 @@
 
 {% block content %}
 
-<style>
-    .jornadas-barra {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 20px;
-        margin: 25px 0;
-    }
-
-    .jornadas-barra .liga-navegacion {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin: 0;
-    }
-
-    .jornadas-selector {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .jornadas-selector label {
-        white-space: nowrap;
-    }
-
-    .jornadas-selector #selector-jornada {
-        padding: 10px 15px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 16px;
-        margin: 0;
-    }
-
-    @media (max-width: 700px) {
-        .jornadas-barra {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .jornadas-barra .liga-navegacion {
-            flex-wrap: wrap;
-        }
-
-        .jornadas-selector {
-            justify-content: flex-end;
-        }
-    }
-</style>
-
-
-<div class="temp-container">
+<div class="temp-container" id="app-jornadas">
 
     <div class="liga-portada">
         <h1>{{ liga.nombre }}</h1>
@@ -72,7 +21,7 @@
 
             <div class="jornadas-selector">
                 <label for="selector-jornada">Seleccionar jornada:</label>
-                <select id="selector-jornada">
+                <select id="selector-jornada" v-model="jornadaSeleccionada">
                     {% for jornada in jornadas %}
                     <option value="{{ jornada.numero }}">Jornada {{ jornada.numero }}</option>
                     {% endfor %}
@@ -83,8 +32,7 @@
         {% for jornada in jornadas %}
 
         <div class="bloque-jornada"
-             data-jornada="{{ jornada.numero }}"
-             {% if not forloop.first %}hidden{% endif %}>
+             v-show="jornadaSeleccionada === '{{ jornada.numero }}'">
 
             <h3>
                 Jornada {{ jornada.numero }}
@@ -135,18 +83,22 @@
 
 </div>
 
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 <script>
-    const selector = document.getElementById("selector-jornada");
-    const bloques = document.querySelectorAll(".bloque-jornada");
-
-    if (selector) {
-        selector.addEventListener("change", function () {
-            bloques.forEach(bloque => {
-                bloque.hidden =
-                    bloque.dataset.jornada !== selector.value;
-            });
-        });
-    }
+    Vue.createApp({
+        delimiters: ['[[', ']]'],
+        data() {
+            return {
+                jornadaSeleccionada: "{{ jornadas.0.numero|escapejs }}"
+            };
+        },
+        mounted() {
+            const selector = this.$el.querySelector('#selector-jornada');
+            if (selector && selector.options.length && !this.jornadaSeleccionada) {
+                this.jornadaSeleccionada = selector.options[0].value;
+            }
+        }
+    }).mount('#app-jornadas');
 </script>
 
 {% endblock %}
