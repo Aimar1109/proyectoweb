@@ -15,7 +15,16 @@
 
     <section class="liga-section">
 
-        <h2>Clasificación</h2>
+        <div class="liga-navegacion">
+            <a href="{% url 'detalle_liga' liga.pk %}"
+               class="liga-nav-activo">
+                Clasificación
+            </a>
+        
+            <a href="{% url 'jornadas_liga' liga.pk %}">
+                Jornadas y resultados
+            </a>
+        </div>
 
         <div class="clasificacion-scroll">
             <table class="tabla-liga">

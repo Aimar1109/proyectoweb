@@ -9,7 +9,7 @@ from django.shortcuts import redirect, render, get_object_or_404
 from . import servicios
 
 from .forms import RegistroForm
-from .models import Alineacion, Club, Equipo, EstadisticaPartido, Grupo, Membresia, Temporada,Liga,Usuario, Partido, Jugador
+from .models import Alineacion, Club, Equipo, EstadisticaPartido, Grupo, Jornada, Membresia, Temporada,Liga,Usuario, Partido, Jugador
 
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.views import LoginView, LogoutView
@@ -325,4 +325,24 @@ def lista_puntos(request, pk, jornada_pk=None):
         "jornadas": todas,
         "anterior": anterior,
         "siguiente": siguiente,
+    })
+
+
+def jornadas_liga(request, pk):
+
+    liga = get_object_or_404(Liga, pk=pk)
+
+    jornadas = (
+        Jornada.objects
+        .filter(liga=liga)
+        .prefetch_related(
+            "partidos__local",
+            "partidos__visitante"
+        )
+        .order_by("numero")
+    )
+
+    return render(request, "fantasy/ligas/jornadas_liga.html", {
+        "liga": liga,
+        "jornadas": jornadas,
     })

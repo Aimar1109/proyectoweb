@@ -1,0 +1,152 @@
+{% extends 'fantasy/base.html' %}
+
+{% block title %}Jornadas - {{ liga.nombre }}{% endblock %}
+
+{% block content %}
+
+<style>
+    .jornadas-barra {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin: 25px 0;
+    }
+
+    .jornadas-barra .liga-navegacion {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 0;
+    }
+
+    .jornadas-selector {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .jornadas-selector label {
+        white-space: nowrap;
+    }
+
+    .jornadas-selector #selector-jornada {
+        padding: 10px 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+        margin: 0;
+    }
+
+    @media (max-width: 700px) {
+        .jornadas-barra {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .jornadas-barra .liga-navegacion {
+            flex-wrap: wrap;
+        }
+
+        .jornadas-selector {
+            justify-content: flex-end;
+        }
+    }
+</style>
+
+
+<div class="temp-container">
+
+    <div class="liga-portada">
+        <h1>{{ liga.nombre }}</h1>
+        <p>{{ liga.categoria }} · Jornadas y resultados</p>
+    </div>
+
+    <section class="liga-section">
+
+        <div class="jornadas-barra">
+            <div class="liga-navegacion">
+                <a href="{% url 'detalle_liga' liga.pk %}">Clasificación</a>
+                <a href="{% url 'jornadas_liga' liga.pk %}" class="liga-nav-activo">Jornadas y resultados</a>
+            </div>
+
+            <div class="jornadas-selector">
+                <label for="selector-jornada">Seleccionar jornada:</label>
+                <select id="selector-jornada">
+                    {% for jornada in jornadas %}
+                    <option value="{{ jornada.numero }}">Jornada {{ jornada.numero }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        {% for jornada in jornadas %}
+
+        <div class="bloque-jornada"
+             data-jornada="{{ jornada.numero }}"
+             {% if not forloop.first %}hidden{% endif %}>
+
+            <h3>
+                Jornada {{ jornada.numero }}
+                · {{ jornada.fecha_fin|date:"d/m/Y" }}
+            </h3>
+
+            <table class="tabla-jornadas">
+
+                <tbody>
+                {% for partido in jornada.partidos.all %}
+
+                    <tr>
+                        <td class="equipo-local">
+                            {{ partido.local.nombre }}
+                        </td>
+
+                        <td class="resultado">
+                            {% if partido.goles_local != None and partido.goles_visitante != None %}
+                                {{ partido.goles_local }} - {{ partido.goles_visitante }}
+                            {% else %}
+                                - 
+                            {% endif %}
+                        </td>
+
+                        <td class="equipo-visitante">
+                            {{ partido.visitante.nombre }}
+                        </td>
+                    </tr>
+
+                {% empty %}
+                    <tr>
+                        <td colspan="3">
+                            No hay partidos registrados.
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% empty %}
+            <p>Esta liga todavía no tiene jornadas.</p>
+        {% endfor %}
+
+    </section>
+
+</div>
+
+<script>
+    const selector = document.getElementById("selector-jornada");
+    const bloques = document.querySelectorAll(".bloque-jornada");
+
+    if (selector) {
+        selector.addEventListener("change", function () {
+            bloques.forEach(bloque => {
+                bloque.hidden =
+                    bloque.dataset.jornada !== selector.value;
+            });
+        });
+    }
+</script>
+
+{% endblock %}

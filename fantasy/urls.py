@@ -19,6 +19,7 @@ urlpatterns = [
     path("temporadas/<int:pk>/", views.detalle_temporada, name="detalle_temporada"),
 
     path("ligas/<int:pk>/", views.detalle_liga, name="detalle_liga"),
+    path("ligas/<int:pk>/jornadas/", views.jornadas_liga, name="jornadas_liga"),
 
     path("grupos/", views.mis_grupos, name="mis_grupos"),
     path("grupos/unirse/", views.unirse_grupo, name="unirse_grupo"),
@@ -29,4 +30,5 @@ urlpatterns = [
 
     path("grupos/membresia/<int:pk>/puntos/", views.lista_puntos, name="lista_puntos"),
     path("grupos/membresia/<int:pk>/puntos/<int:jornada_pk>/", views.lista_puntos, name="lista_puntos"),
+
 ]

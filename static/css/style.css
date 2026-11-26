@@ -1406,3 +1406,122 @@ a {
             max-width: none;
         }
     }
+
+/* JORNADAS LIGA */
+
+#selector-jornada {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    font-size: 16px;
+}
+
+.bloque-jornada[hidden] {
+    display: none !important;
+}
+
+.bloque-jornada h3 {
+    background-color: #185927;
+    color: white;
+    padding: 15px;
+    border-radius: 8px 8px 0 0;
+    margin-bottom: 0;
+}
+
+.tabla-jornadas {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.tabla-jornadas td {
+    padding: 18px;
+    border-bottom: 1px solid #ddd;
+}
+
+.equipo-local {
+    width: 40%;
+    text-align: right;
+}
+
+.resultado {
+    width: 20%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.equipo-visitante {
+    width: 40%;
+    text-align: left;
+}
+
+.liga-navegacion {
+    display: flex;
+    gap: 12px;
+    margin: 25px 0;
+}
+
+.liga-navegacion a {
+    padding: 12px 20px;
+    border: 2px solid #185927;
+    border-radius: 8px;
+    color: #185927;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.liga-navegacion a:hover,
+.liga-navegacion .liga-nav-activo {
+    background-color: #185927;
+    color: white;
+}
+
+.jornadas-barra {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin: 25px 0;
+}
+
+.jornadas-barra .liga-navegacion {
+    display: flex;
+    gap: 12px;
+    margin: 0;
+}
+
+.jornadas-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.jornadas-selector label {
+    white-space: nowrap;
+}
+
+.jornadas-selector select {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    margin: 0;
+}
+
+/* Adaptación para móviles */
+@media (max-width: 700px) {
+    .jornadas-barra {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .jornadas-barra .liga-navegacion {
+        flex-wrap: wrap;
+    }
+
+    .jornadas-selector {
+        justify-content: flex-end;
+    }
+}
