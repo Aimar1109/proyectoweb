@@ -3,8 +3,9 @@
     python manage.py importar_fvf --dir ruta/a/los/csv
 
 Archivos esperados en --dir:
-    competiciones_fvf_1.csv, jornadas_fvf.csv,
-    partidos_jugados_fvf.csv, clubes_info.csv
+    competiciones_fvf.csv, jornadas_fvf.csv,
+    partidos_fvf_19_correcciones.csv (si existe) o partidos_fvf.csv,
+    clubes_info.csv
 
 Es idempotente: se puede ejecutar varias veces sin duplicar nada
 (usa get_or_create / update_or_create con las restricciones únicas de tus modelos).
@@ -25,7 +26,8 @@ from fantasy.models import Club, Equipo, Jornada, Liga, Partido, Temporada
 
 F_COMPETICIONES = "competiciones_fvf.csv"
 F_JORNADAS = "jornadas_fvf.csv"
-F_PARTIDOS = "partidos_jugados_fvf.csv"
+F_PARTIDOS = "partidos_fvf.csv"
+F_PARTIDOS_CORREGIDOS = "partidos_fvf_19_correcciones.csv"
 F_CLUBES = "clubes_info.csv"
 
 MINUSCULAS = {"de", "del", "la", "las", "los", "y", "e"}
@@ -100,12 +102,28 @@ def ciudad_de(direccion):
     return ""
 
 
+def goles_csv(valor, campo, contexto):
+    """Devuelve un entero o None si no hay goles; rechaza datos no válidos."""
+    texto = limpio(valor)
+    if not texto:
+        return None
+    if not texto.isdecimal():
+        raise CommandError(f"Goles incorrectos en {contexto}: {campo}={texto!r}")
+    goles = int(texto)
+    if goles > 32767:
+        raise CommandError(f"Goles fuera de rango en {contexto}: {campo}={goles}")
+    return goles
+
+
 # --------------------------------------------------------------------------
 class Command(BaseCommand):
-    help = "Importa competiciones, clubes, equipos, jornadas y partidos desde los CSV de la FVF."
+    help = "Importa competiciones, clubes, equipos, jornadas y todos los partidos (también pendientes)."
 
     def add_arguments(self, parser):
         parser.add_argument("--dir", default=".", help="Carpeta con los CSV (por defecto, la actual).")
+        parser.add_argument("--partidos", default=None, help=(
+            "Nombre del CSV de partidos dentro de --dir. Por defecto, usa el "
+            "CSV de 19 correcciones si existe; si no, partidos_fvf.csv."))
         parser.add_argument("--solo-con-calendario", action="store_true",
                             help="Importa solo los grupos que tienen jornadas o partidos en los CSV.")
         parser.add_argument("--dry-run", action="store_true",
@@ -119,7 +137,12 @@ class Command(BaseCommand):
         comp = leer(carpeta / F_COMPETICIONES,
                     ["Competición", "Grupo", "Club", "Equipo", "Categoría", "cod_competicion", "cod_grupo"])
         jor = leer(carpeta / F_JORNADAS, ["cod_grupo", "numero", "fecha_inicio", "fecha_fin"])
-        par = leer(carpeta / F_PARTIDOS,
+        archivo_partidos = o["partidos"] or (
+            F_PARTIDOS_CORREGIDOS if (carpeta / F_PARTIDOS_CORREGIDOS).exists()
+            else F_PARTIDOS
+        )
+        self.stdout.write(f"CSV de partidos: {carpeta / archivo_partidos}")
+        par = leer(carpeta / archivo_partidos,
                    ["cod_grupo", "jornada", "local", "visitante", "goles_local", "goles_visitante"])
         info = leer(carpeta / F_CLUBES, ["codigo_club", "nombre", "email", "direccion"])
 
@@ -247,7 +270,7 @@ class Command(BaseCommand):
 
         # ---- Partidos
         clubes_norm = list(club_de)
-        n_par = n_act = 0
+        n_par = n_act = n_pendientes = 0
         for r in par:
             liga = liga_de.get(r["cod_grupo"])
             if liga is None:
@@ -261,13 +284,27 @@ class Command(BaseCommand):
             if local.id == visit.id:
                 self.avisos.append(f"Partido con el mismo equipo: {r['local']} (grupo {r['cod_grupo']})")
                 continue
-            _, creado = Partido.objects.update_or_create(
+            contexto = f"grupo {r['cod_grupo']} J{r['jornada']}: {r['local']} - {r['visitante']}"
+            gl = goles_csv(r["goles_local"], "goles_local", contexto)
+            gv = goles_csv(r["goles_visitante"], "goles_visitante", contexto)
+            if (gl is None) != (gv is None):
+                self.avisos.append(f"Marcador incompleto: {contexto}; se deja sin goles")
+                gl = gv = None
+
+            # No sobrescribir marcadores existentes con celdas vacías del CSV.
+            # Todos los partidos se guardan sin fecha individual, incluidos los antiguos.
+            defaults = {"fecha": None}
+            if gl is not None and gv is not None:
+                defaults.update(goles_local=gl, goles_visitante=gv)
+            partido, creado = Partido.objects.update_or_create(
                 jornada=jornada, local=local, visitante=visit,
-                defaults={"goles_local": int(r["goles_local"]),
-                          "goles_visitante": int(r["goles_visitante"])})
+                defaults=defaults)
             n_par += creado
             n_act += not creado
-        self.stdout.write(f"Partidos: {n_par} nuevos, {n_act} actualizados")
+            if partido.goles_local is None and partido.goles_visitante is None:
+                n_pendientes += 1
+        self.stdout.write(f"Partidos: {n_par} nuevos, {n_act} actualizados; "
+                          f"{n_pendientes} pendientes sin marcador")
         self.stdout.write(self.style.SUCCESS("Importación terminada."))
 
     # ----------------------------------------------------------------------

@@ -82,9 +82,31 @@ class Command(BaseCommand):
             orden = usuarios.copy()
             random.Random(f"{o['seed']}-reparto").shuffle(orden)
             for indice in range(1, o['grupos_por_liga'] + 1):
-                nombre_grupo = f'[DEMO] Liga {liga.pk} - Grupo {indice}'
-                grupo = Grupo.objects.filter(liga=liga, nombre=nombre_grupo,
-                    creador__email__endswith=DOMINIO, creador__username__startswith='fantasy_demo_').first()
+                nombre_grupo = f'Liga {liga.pk} - Grupo {indice}'
+                # Reconocer grupos creados con la versión anterior (prefijo [DEMO])
+                # y renombrarlos sin duplicar grupos ni perder membresías/alineaciones.
+                filtros_demo = dict(
+                    liga=liga,
+                    creador__email__endswith=DOMINIO,
+                    creador__username__startswith='fantasy_demo_',
+                )
+                grupo = Grupo.objects.filter(nombre=nombre_grupo, **filtros_demo).first()
+                if grupo is None:
+                    grupo = Grupo.objects.filter(
+                        nombre=f'[DEMO] {nombre_grupo}', **filtros_demo
+                    ).first()
+                    if grupo is not None:
+                        # UniqueConstraint en (creador, nombre): evitar renombrar
+                        # si ese creador ya tiene un grupo con el nombre nuevo.
+                        if Grupo.objects.filter(
+                            creador=grupo.creador, nombre=nombre_grupo
+                        ).exclude(pk=grupo.pk).exists():
+                            raise CommandError(
+                                f'No se puede renombrar {grupo.nombre}: nombre duplicado '
+                                f'para el creador {grupo.creador_id}'
+                            )
+                        grupo.nombre = nombre_grupo
+                        grupo.save(update_fields=['nombre'])
                 if grupo is None:
                     inicio = (grupos * o['miembros']) % len(orden)
                     elegidos = [orden[(inicio+k) % len(orden)] for k in range(o['miembros'])]

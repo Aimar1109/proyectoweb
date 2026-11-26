@@ -35,7 +35,7 @@ class Command(BaseCommand):
         for j in Jugador.objects.all().order_by("dorsal"):
             plantillas[j.equipo_id][j.posicion].append(j)
 
-        partidos = (Partido.objects.filter(goles_local__isnull=False, estadisticas__isnull=True)
+        partidos = (Partido.objects.filter(goles_local__isnull=False, goles_visitante__isnull=False, estadisticas__isnull=True)
                     .distinct().order_by("id"))
         filas = []
         n_partidos = 0
