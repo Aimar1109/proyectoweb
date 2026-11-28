@@ -74,6 +74,12 @@ def detalle_temporada(request,pk):
     ligas = temporada.ligas.all()
     return render(request,"fantasy/temporadas/detalle_temporada.html",{"temporada":temporada,"ligas":ligas})
 
+def ligas_actuales(request):
+    temporada = Temporada.objects.order_by("-fecha_inicio").first()
+    if temporada is None:
+        return redirect("lista_temporadas")
+    return redirect("detalle_temporada", pk=temporada.pk)
+
 #LIGA | solo detalle porque tenemos la lista de ligas en el detalle de la temporada
 
 
@@ -221,7 +227,8 @@ def alineacion(request, pk):
             return redirect("alineacion", pk=grupo.pk) 
         
         except ValidationError as e:
-            messages.error(request, e.messages)
+            for msg in e.messages:
+                messages.error(request, msg)
 
     jugadores = list(
         Jugador.objects.filter(equipo__liga = grupo.liga)

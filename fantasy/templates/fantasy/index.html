@@ -21,7 +21,7 @@
             </p>
 
             <div class="hero-buttons">
-                <a href="{% url 'index' %}" class="btn-primary">
+                <a href="{% if user.is_authenticated %}{% url 'mis_grupos' %}{% else %}{% url 'registro' %}{% endif %}" class="btn-primary">
                     Empezar a jugar
                 </a>
 

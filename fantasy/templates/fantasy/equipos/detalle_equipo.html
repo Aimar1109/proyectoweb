@@ -10,14 +10,24 @@
     <div class="card club-card">
         <div class="club-header">
             {% static 'img/escudos/NO.png' as escudo_no %}
-            <img src="{% static 'img/escudos/'|add:equipo.club.escudo %}"
-                 alt="Escudo de {{ equipo.club.nombre }}"
-                 class="club-escudo"
-                 onerror="this.onerror=null; this.src='{{ escudo_no }}'">
+            {% if equipo.club %}
+                <img src="{% static 'img/escudos/'|add:equipo.club.escudo %}"
+                     alt="Escudo de {{ equipo.club.nombre }}"
+                     class="club-escudo"
+                     onerror="this.onerror=null; this.src='{{ escudo_no }}'">
+            {% else %}
+                <img src="{{ escudo_no }}"
+                     alt="Escudo de {{ equipo.nombre }}"
+                     class="club-escudo">
+            {% endif %}
             <div>
                 <h1>{{ equipo.nombre }}</h1>
-                <p class="meta"><strong>Ciudad:</strong> {{ equipo.ciudad }}</p>
-                <p class="meta"><strong>Año de fundación:</strong> {{ equipo.anno_fundacion }}</p>
+                {% if equipo.ciudad %}
+                    <p class="meta"><strong>Ciudad:</strong> {{ equipo.ciudad }}</p>
+                {% endif %}
+                {% if equipo.club and equipo.club.anno_fundacion %}
+                    <p class="meta"><strong>Año de fundación:</strong> {{ equipo.club.anno_fundacion }}</p>
+                {% endif %}
             </div>
         </div>
         {% if equipo.descripcion %}
@@ -59,7 +69,11 @@
     </div>
 
     <div class="acciones">
-        <a href="{% url 'detalle_club' equipo.club.pk %}" class="boton boton-sec">Volver a {{ equipo.club.nombre }}</a>
+        {% if equipo.club %}
+            <a href="{% url 'detalle_club' equipo.club.pk %}" class="boton boton-sec">Volver a {{ equipo.club.nombre }}</a>
+        {% elif equipo.liga %}
+            <a href="{% url 'detalle_liga' equipo.liga.pk %}" class="boton boton-sec">Volver a {{ equipo.liga.nombre }}</a>
+        {% endif %}
         <a href="{% url 'index' %}" class="boton boton-sec">Volver al inicio</a>
     </div>
 

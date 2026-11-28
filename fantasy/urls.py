@@ -18,6 +18,7 @@ urlpatterns = [
     path("temporadas/", views.lista_temporadas, name="lista_temporadas"),
     path("temporadas/<int:pk>/", views.detalle_temporada, name="detalle_temporada"),
 
+    path("ligas/", views.ligas_actuales, name="ligas_actuales"),
     path("ligas/<int:pk>/", views.detalle_liga, name="detalle_liga"),
     path("ligas/<int:pk>/jornadas/", views.jornadas_liga, name="jornadas_liga"),
 

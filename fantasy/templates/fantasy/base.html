@@ -19,7 +19,7 @@
 
         <nav class="navbar-links">
             <a href="{% url 'lista_clubes' %}">Clubes</a>
-            <a href="{% url 'detalle_temporada' 1 %}">Ligas</a>
+            <a href="{% url 'ligas_actuales' %}">Ligas</a>
             
             {% if user.is_authenticated %}
                 <a href="{% url 'mis_grupos' %}">Mis grupos</a>
@@ -66,5 +66,4 @@
         Fantasy Ligas Vascas · Ingeniería Web · Universidad de Deusto
     </footer>
 </body>
-</main>
 </html>
