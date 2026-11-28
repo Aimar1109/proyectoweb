@@ -35,11 +35,93 @@ class IndexView(TemplateView):
         context['total_jugadores'] = Jugador.objects.count()
         context['total_usuarios'] = Usuario.objects.count()
 
-        context['proximos_partidos'] = Partido.objects.filter(
-            fecha__gte=timezone.now()
-        ).select_related(
-            'local', 'visitante'
-        ).order_by('fecha')[:2]
+        hoy = timezone.localdate()
+        no_descanso = ~(
+            models.Q(local__nombre__iexact="Atsedena")
+            | models.Q(visitante__nombre__iexact="Atsedena")
+        )
+
+        ligas_usuario_ids = []
+        if self.request.user.is_authenticated:
+            ligas_usuario_ids = list(
+                Grupo.objects.filter(membresias__usuario=self.request.user)
+                .values_list('liga_id', flat=True)
+                .distinct()
+            )
+
+        jornadas_qs = (
+            Jornada.objects.filter(
+                fecha_fin__gte=hoy,
+                partidos__goles_local__isnull=True,
+            )
+            .select_related('liga')
+            .distinct()
+            .order_by('fecha_inicio', 'liga__categoria', 'liga__nombre', 'numero')
+        )
+        if not jornadas_qs.exists():
+            jornadas_qs = (
+                Jornada.objects.filter(partidos__goles_local__isnull=True)
+                .select_related('liga')
+                .distinct()
+                .order_by('fecha_inicio', 'liga__categoria', 'liga__nombre', 'numero')
+            )
+
+        primera_por_liga = {}
+        for j in jornadas_qs:
+            if j.liga_id not in primera_por_liga:
+                primera_por_liga[j.liga_id] = j
+
+        destacadas = []
+        vistos = set()
+        for lid in ligas_usuario_ids:
+            if lid in primera_por_liga and lid not in vistos:
+                destacadas.append(primera_por_liga[lid])
+                vistos.add(lid)
+
+        por_categoria = {}
+        for j in primera_por_liga.values():
+            if j.liga_id not in vistos:
+                por_categoria.setdefault(j.liga.categoria, []).append(j)
+
+        categorias_orden = sorted(por_categoria.keys())
+        while len(destacadas) < 9 and any(por_categoria.values()):
+            for cat in categorias_orden:
+                if len(destacadas) >= 9:
+                    break
+                lista_cat = por_categoria[cat]
+                if lista_cat:
+                    destacadas.append(lista_cat.pop(0))
+
+        partidos_por_jornada = {}
+        if destacadas:
+            partidos_qs = (
+                Partido.objects.filter(
+                    jornada_id__in=[j.pk for j in destacadas],
+                    goles_local__isnull=True,
+                )
+                .filter(no_descanso)
+                .select_related('local__club', 'visitante__club', 'jornada__liga')
+                .order_by('id')
+            )
+            for p in partidos_qs:
+                partidos_por_jornada.setdefault(p.jornada_id, []).append(p)
+
+        proximas_jornadas = []
+        for j in destacadas:
+            lista_p = partidos_por_jornada.get(j.pk, [])
+            if lista_p:
+                proximas_jornadas.append({
+                    'jornada': j,
+                    'liga': j.liga,
+                    'partidos': lista_p[:3],
+                    'total_partidos': len(lista_p),
+                })
+
+        context['proximas_jornadas'] = proximas_jornadas
+        context['categorias_jornadas'] = sorted({item['liga'].categoria for item in proximas_jornadas})
+        context['proximos_partidos'] = (
+            proximas_jornadas[0]['partidos'][:2] if proximas_jornadas else []
+        )
 
         return context
 

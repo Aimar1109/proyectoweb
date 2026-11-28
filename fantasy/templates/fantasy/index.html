@@ -1,5 +1,6 @@
 
 {% extends 'fantasy/base.html' %}
+{% load static %}
 
 {% block title %}Inicio - Fantasy Ligas Vascas{% endblock %}
 
@@ -35,18 +36,41 @@
         <div class="card jornada-card">
             <h3>Próxima jornada</h3>
 
+            {% static 'img/escudos/NO.png' as escudo_no %}
             {% for partido in proximos_partidos %}
                 <div class="partido">
-                    <span>{{ partido.local.nombre }}</span>
-                    <span>vs</span>
-                    <span>{{ partido.visitante.nombre }}</span>
+                    <span class="partido-equipo">
+                        {% if partido.local.club %}
+                            <img class="escudo-mini" src="{% static 'img/escudos/'|add:partido.local.club.escudo %}"
+                                 alt="" onerror="this.onerror=null; this.src='{{ escudo_no }}'">
+                        {% else %}
+                            <img class="escudo-mini" src="{{ escudo_no }}" alt="">
+                        {% endif %}
+                        <span>{{ partido.local.nombre }}</span>
+                    </span>
+
+                    <span class="partido-vs">vs</span>
+
+                    <span class="partido-equipo partido-equipo-der">
+                        <span>{{ partido.visitante.nombre }}</span>
+                        {% if partido.visitante.club %}
+                            <img class="escudo-mini" src="{% static 'img/escudos/'|add:partido.visitante.club.escudo %}"
+                                 alt="" onerror="this.onerror=null; this.src='{{ escudo_no }}'">
+                        {% else %}
+                            <img class="escudo-mini" src="{{ escudo_no }}" alt="">
+                        {% endif %}
+                    </span>
                 </div>
             {% empty %}
                 <p>No hay próximos partidos disponibles.</p>
             {% endfor %}
 
             <p class="card-note">
-                Próximos partidos programados
+                {% if proximos_partidos %}
+                    {{ proximos_partidos.0.jornada.liga.nombre }} · Jornada {{ proximos_partidos.0.jornada.numero }} ({{ proximos_partidos.0.jornada.fecha_fin|date:"d/m/Y" }})
+                {% else %}
+                    Próximos partidos programados
+                {% endif %}
             </p>
         </div>
 
@@ -87,6 +111,92 @@
 
         </div>
     </section>
+
+    <!-- PRÓXIMAS JORNADAS -->
+    {% if proximas_jornadas %}
+    <section class="section" id="proximas-jornadas">
+        <div class="pj-cabecera">
+            <div>
+                <h2>Próximas jornadas</h2>
+                <p class="meta">Calendario de la siguiente jornada pendiente por liga.</p>
+            </div>
+
+            {% if categorias_jornadas|length > 1 %}
+            <div class="pj-filtros" role="group" aria-label="Filtrar jornadas por categoría">
+                <button type="button" class="pj-chip activo" data-cat="">Todas</button>
+                {% for cat in categorias_jornadas %}
+                    <button type="button" class="pj-chip" data-cat="{{ cat }}">{{ cat }}</button>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        {% static 'img/escudos/NO.png' as escudo_no %}
+        <div class="pj-grid">
+            {% for item in proximas_jornadas %}
+            <article class="card pj-card" data-categoria="{{ item.liga.categoria }}">
+                <div class="pj-card-top">
+                    <span class="pj-cat">{{ item.liga.categoria }}</span>
+                    <span class="pj-fecha">J{{ item.jornada.numero }} · {{ item.jornada.fecha_fin|date:"d/m/Y" }}</span>
+                </div>
+
+                <h3>
+                    <a href="{% url 'jornadas_liga' item.liga.pk %}">{{ item.liga.nombre }}</a>
+                </h3>
+
+                <ul class="pj-partidos">
+                    {% for p in item.partidos %}
+                    <li>
+                        <span class="pj-eq">
+                            {% if p.local.club %}
+                                <img class="pj-escudo" src="{% static 'img/escudos/'|add:p.local.club.escudo %}" alt="" onerror="this.onerror=null; this.src='{{ escudo_no }}'">
+                            {% else %}
+                                <img class="pj-escudo" src="{{ escudo_no }}" alt="">
+                            {% endif %}
+                            <span>{{ p.local.nombre }}</span>
+                        </span>
+                        <span class="pj-vs">vs</span>
+                        <span class="pj-eq pj-eq-der">
+                            <span>{{ p.visitante.nombre }}</span>
+                            {% if p.visitante.club %}
+                                <img class="pj-escudo" src="{% static 'img/escudos/'|add:p.visitante.club.escudo %}" alt="" onerror="this.onerror=null; this.src='{{ escudo_no }}'">
+                            {% else %}
+                                <img class="pj-escudo" src="{{ escudo_no }}" alt="">
+                            {% endif %}
+                        </span>
+                    </li>
+                    {% endfor %}
+                </ul>
+
+                <div class="pj-card-pie">
+                    <span class="meta">{{ item.total_partidos }} partido{{ item.total_partidos|pluralize:"s" }}</span>
+                    <a href="{% url 'jornadas_liga' item.liga.pk %}">Ver jornada completa →</a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <script>
+    (function () {
+        const botones = document.querySelectorAll('#proximas-jornadas .pj-chip');
+        const tarjetas = document.querySelectorAll('#proximas-jornadas .pj-card');
+        if (!botones.length) return;
+
+        botones.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const cat = btn.dataset.cat;
+                botones.forEach(b => b.classList.toggle('activo', b === btn));
+                tarjetas.forEach(card => {
+                    const visible = !cat || card.dataset.categoria === cat;
+                    card.hidden = !visible;
+                    card.style.display = visible ? '' : 'none';
+                });
+            });
+        });
+    })();
+    </script>
+    {% endif %}
 
     <!-- EXPLORA -->
     <section class="section">
