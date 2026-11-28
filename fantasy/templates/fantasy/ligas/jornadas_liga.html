@@ -1,8 +1,11 @@
 {% extends 'fantasy/base.html' %}
+{% load static %}
 
 {% block title %}Jornadas - {{ liga.nombre }}{% endblock %}
 
 {% block content %}
+
+{% static 'img/escudos/NO.png' as escudo_no %}
 
 <div class="temp-container" id="app-jornadas">
 
@@ -46,7 +49,13 @@
 
                     <tr>
                         <td class="equipo-local">
-                            {{ partido.local.nombre }}
+                            <span class="equipo-con-escudo">
+                            <span>{{ partido.local.nombre }}</span>
+                            <img class="escudo-equipo" width="28" height="28"
+                                 src="{% if partido.local.club.escudo %}{% static 'img/escudos/'|add:partido.local.club.escudo %}{% else %}{{ escudo_no }}{% endif %}"
+                                 alt="Escudo de {{ partido.local.nombre }}"
+                                 onerror="this.onerror=null; this.src='{{ escudo_no }}'">
+                            </span>
                         </td>
 
                         <td class="resultado">
@@ -58,7 +67,13 @@
                         </td>
 
                         <td class="equipo-visitante">
-                            {{ partido.visitante.nombre }}
+                            <span class="equipo-con-escudo">
+                            <img class="escudo-equipo" width="28" height="28"
+                                 src="{% if partido.visitante.club.escudo %}{% static 'img/escudos/'|add:partido.visitante.club.escudo %}{% else %}{{ escudo_no }}{% endif %}"
+                                 alt="Escudo de {{ partido.visitante.nombre }}"
+                                 onerror="this.onerror=null; this.src='{{ escudo_no }}'">
+                            <span>{{ partido.visitante.nombre }}</span>
+                            </span>
                         </td>
                     </tr>
 

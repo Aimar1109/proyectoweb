@@ -1492,3 +1492,38 @@ a {
         justify-content: flex-end;
     }
 }
+
+/* Escudos en la tabla de jornadas y resultados (jornadas_liga.html) */
+.tabla-jornadas .equipo-local,
+.tabla-jornadas .equipo-visitante { white-space: nowrap; vertical-align: middle; }
+.tabla-jornadas .equipo-local { text-align: right; }
+.tabla-jornadas .equipo-visitante { text-align: left; }
+
+/* Resultado en una sola línea ("1 - 2") */
+.tabla-jornadas .resultado { white-space: nowrap; text-align: center; vertical-align: middle; padding: 0 12px; }
+
+/* Nombre + escudo alineados al centro vertical, con separación (gap) entre ambos */
+.tabla-jornadas .equipo-con-escudo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    vertical-align: middle;
+    line-height: normal;
+}
+
+/* Tamaño fijo del escudo. El selector con "img" gana a reglas genéricas de tu CSS. */
+
+.tabla-jornadas .equipo-con-escudo {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    gap: 10px;
+}
+
+.tabla-jornadas img.escudo-equipo {
+    display: block;
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
